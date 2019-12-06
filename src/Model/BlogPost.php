@@ -28,26 +28,24 @@ class BlogPost extends Model
         ];
     }
 
-    public function get_siblings()
-    {
-        return self::all('
-            WHERE category = ?
-            AND id != ?
-            AND publication_date < UNIX_TIMESTAMP( NOW() )
-            ORDER BY publication_date DESC
-            LIMIT 4
-        ', $this->category ? $this->category->id : NULL, $this->id);
-    }
-
     public function get_blocks()
     {
         return $this->has_many(BlogPostBlock::class, 'blog_post', 'ORDER BY sort_index');
+    }
+
+    public function get_photos()
+    {
+        return $this->has_many(BlogPostPhoto::class, 'blog_post', 'ORDER BY sort_index');
     }
 
     public function delete()
     {
         foreach($this->blocks as $b) {
             $b->delete();
+        }
+
+        foreach($this->photos as $p) {
+            $p->delete();
         }
 
         parent::delete();

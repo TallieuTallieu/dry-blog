@@ -2,6 +2,7 @@
 
 namespace Tnt\Blog\Admin;
 
+use dry\admin\component\I18nSwitcher;
 use Tnt\Blog\Model\BlogCategory;
 
 use dry\admin\component\BooleanEdit;
@@ -20,7 +21,7 @@ use dry\orm\sort\DragSorter;
 
 class BlogCategoryManager extends Manager
 {
-    public function __construct()
+    public function __construct(array $languages)
     {
         parent::__construct(BlogCategory::class, [
             'icon' => Module::ICON_NEWS,
@@ -28,18 +29,34 @@ class BlogCategoryManager extends Manager
             'plural' => 'categories',
         ]);
 
+        $components = [];
+
+        foreach ($languages as $language) {
+            $components[$language] = [
+                new Stack(Stack::HORIZONTAL, [
+                    new StringEdit('title_'.$language, [
+                        'v8n_required' => TRUE,
+                        'suggest_slug' => 'slug_'.$language,
+                        'label' => 'title',
+                    ]),
+                    new StringEdit('slug_'.$language, [
+                        'v8n_required' => TRUE,
+                        'handle_duplicate' => TRUE,
+                        'slugify_on_blur' => TRUE,
+                        'label' => 'slug',
+                    ]),
+                ]),
+            ];
+        }
+
+        $componentsContainer = new Stack(Stack::VERTICAL, $components[$languages[0]]);
+
+        if (count($languages) > 1) {
+            $componentsContainer = new I18nSwitcher($components);
+        }
+
         $this->actions[] = $create = new Create([
-            new Stack(Stack::HORIZONTAL, [
-                new StringEdit('title', [
-                    'v8n_required' => TRUE,
-                    'suggest_slug' => 'slug',
-                ]),
-                new StringEdit('slug', [
-                    'v8n_required' => TRUE,
-                    'handle_duplicate' => TRUE,
-                    'slugify_on_blur' => TRUE,
-                ]),
-            ]),
+            $componentsContainer,
             new BooleanEdit('is_visible'),
         ], [
             'mode' => Create::MODE_POPUP,
@@ -55,7 +72,7 @@ class BlogCategoryManager extends Manager
 
         $this->index = new Index([
             new SortHandle(),
-            new StringView('title'),
+            new StringView('title_'.$languages[0]),
             $edit->create_link(),
             $delete->create_link(),
         ], [

@@ -2,13 +2,13 @@
 
 namespace Tnt\Blog\Admin;
 
+use dry\admin\component\I18nSwitcher;
 use Tnt\Blog\Model\BlogPost;
 
 use dry\admin\component\BooleanEdit;
 use dry\admin\component\DateEdit;
 use dry\admin\component\DateView;
 use dry\admin\component\EnumEdit;
-use dry\admin\component\EnumView;
 use dry\admin\component\Stack;
 use dry\admin\component\StringEdit;
 use dry\admin\component\StringView;
@@ -31,8 +31,12 @@ class BlogPostManager extends Manager
 {
     public function __construct(array $kwargs = [])
     {
-        $categories = false;
-        $authors = false;
+        $categories = true;
+        $authors = true;
+        $photos = true;
+        $advancedLayout = true;
+        $blockTypes = [];
+        $languages = [];
 
         extract( $kwargs, EXTR_IF_EXISTS );
 
@@ -42,19 +46,57 @@ class BlogPostManager extends Manager
             'plural' => 'posts',
         ]);
 
-        $this->actions[] = $create = new Create([
-            new EnumEdit('layout', BlogPost::get_layout_enum()),
-            new Stack(Stack::HORIZONTAL, [
-                new StringEdit('title', [
+        $generalComponents = [];
+        $contentComponents = [];
+
+        foreach ($languages as $language) {
+            $generalComponents[$language] = [
+                new StringEdit('title_'.$language, [
                     'v8n_required' => TRUE,
-                    'suggest_slug' => 'slug',
+                    'suggest_slug' => 'slug_'.$language,
+                    'label' => 'title',
                 ]),
-                new StringEdit('slug', [
+                new StringEdit('slug_'.$language, [
                     'v8n_required' => TRUE,
                     'handle_duplicate' => TRUE,
                     'slugify_on_blur' => TRUE,
+                    'label' => 'slug',
                 ]),
-            ]),
+            ];
+
+            $contentComponents[$language] = [
+                new StringEdit('intro_text_'.$language, [
+                    'multiline' => TRUE,
+                    'height' => 60,
+                    'label' => 'intro text',
+                ]),
+                new StringEdit('badge_text_'.$language, [
+                    'label' => 'badge text',
+                ]),
+                new Stack(Stack::HORIZONTAL, [
+                    new StringEdit('cta_title_'.$language, [
+                        'label' => 'title'
+                    ]),
+                    new StringEdit('cta_url_'.$language, [
+                        'label' => 'url'
+                    ]),
+                ], [
+                    'title' => 'Call to action',
+                    'grid' => [1,2]
+                ]),
+            ];
+        }
+
+        $generalComponentsContainer = new Stack(Stack::VERTICAL, $generalComponents[$languages[0]]);
+        $contentComponentsContainer = new Stack(Stack::VERTICAL, $contentComponents[$languages[0]]);
+
+        if (count($languages) > 1) {
+            $generalComponentsContainer = new I18nSwitcher($generalComponents);
+            $contentComponentsContainer = new I18nSwitcher($contentComponents);
+        }
+
+        $this->actions[] = $create = new Create([
+            $generalComponentsContainer,
             new DateEdit('publication_date', [
                 'v8n_required' => TRUE,
             ]),
@@ -69,44 +111,47 @@ class BlogPostManager extends Manager
             'mode' => Create::MODE_POPUP,
         ]);
 
+        if ($advancedLayout) {
+            array_unshift($create->components, new EnumEdit('layout', BlogPost::get_layout_enum()));
+        }
+
         if ($categories) {
-            $create->components[] = new ForeignKeySelect('category');
+            $create->components[] = new ForeignKeySelect('category', [
+                'to_string' => 'title_'.$languages[0],
+            ]);
         }
 
         $content = new TabbedContent([
             ['General', [
-                new StringEdit('intro_text', [
-                    'multiline' => TRUE,
-                    'height' => 60,
-                ]),
-                new StringEdit('badge_text'),
-                new InlineManager(new BlogPostBlockManager(), [
+                $contentComponentsContainer,
+            ]],
+            [ 'Content', [
+                new InlineManager(new BlogPostBlockManager($blockTypes, $languages), [
                     'restrict_by_foreign_key' => 'blog_post',
                 ]),
-            ],],
+            ]]
         ]);
+
+        $sidebarContent = [
+            $generalComponentsContainer,
+            new DateEdit('publication_date', [
+                'v8n_required' => TRUE,
+            ]),
+            new Picker('photo', [
+                'v8n_required' => TRUE,
+            ]),
+            new BooleanEdit('is_visible'),
+        ];
+
+        if ($advancedLayout) {
+            array_unshift($sidebarContent, new EnumEdit('layout', BlogPost::get_layout_enum()));
+        }
 
         $this->actions[] = $edit = new Edit([
             new Stack(Stack::HORIZONTAL, [
                 $content,
-                new Stack(Stack::VERTICAL, [
-                    new StringEdit('title', [
-                        'v8n_required' => TRUE,
-                        'suggest_slug' => 'slug',
-                    ]),
-                    new StringEdit('slug', [
-                        'v8n_required' => TRUE,
-                        'handle_duplicate' => TRUE,
-                        'slugify_on_blur' => TRUE,
-                    ]),
-                    new DateEdit('publication_date', [
-                        'v8n_required' => TRUE,
-                    ]),
-                    new EnumEdit('layout', BlogPost::get_layout_enum()),
-                    new BooleanEdit('is_visible'),
-                    new Picker('photo', [
-                        'v8n_required' => TRUE,
-                    ]),
+                new Stack(Stack::VERTICAL, $sidebarContent, [
+                    'title' => 'General information'
                 ]),
             ], [
                 'grid' => [5, 2],
@@ -117,7 +162,9 @@ class BlogPostManager extends Manager
 
         if ($categories) {
             $content->tabs[] = [ 'Categories', [
-                new ForeignKeySelect('category'),
+                new ForeignKeySelect('category', [
+                    'to_string' => 'title_'.$languages[0],
+                ]),
             ] ];
         }
 
@@ -129,6 +176,14 @@ class BlogPostManager extends Manager
             ] ];
         }
 
+        if ($photos) {
+            $content->tabs[] = [ 'Media', [
+               new InlineManager(new BlogPostPhotoManager(), [
+                   'restrict_by_foreign_key' => 'blog_post',
+               ])
+            ] ];
+        }
+
         $this->actions[] = $delete = new Delete();
 
         $this->header[] = $create->create_link('Add post');
@@ -136,9 +191,8 @@ class BlogPostManager extends Manager
         $this->footer[] = new Pagination();
 
         $this->index = new Index([
-            new StringView('title'),
+            new StringView('title_'.$languages[0]),
             new DateView('publication_date'),
-            new EnumView('layout', BlogPost::get_layout_enum()),
             $edit->create_link(),
             $delete->create_link(),
         ],[

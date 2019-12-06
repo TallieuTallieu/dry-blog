@@ -35,9 +35,13 @@ class CreateBlogPostBlockTable implements RevisionInterface
             $table->addColumn('updated', 'int')->length(11);
             $table->addColumn('sort_index', 'int')->length(11);
             $table->addColumn('type', 'varchar')->length(255);
-            $table->addColumn('title', 'varchar')->length(255);
-            $table->addColumn('body', 'text');
-            $table->addColumn('photo', 'int')->length(11);
+            $table->addColumn('title_nl', 'varchar')->length(255);
+            $table->addColumn('title_fr', 'varchar')->length(255);
+            $table->addColumn('title_en', 'varchar')->length(255);
+            $table->addColumn('body_nl', 'text');
+            $table->addColumn('body_fr', 'text');
+            $table->addColumn('body_en', 'text');
+            $table->addColumn('photo', 'int')->length(11)->null();
             $table->addColumn('blog_post', 'int')->length(11);
 
             $table->addForeignKey('photo', 'dry_media_file');

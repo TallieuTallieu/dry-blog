@@ -33,8 +33,12 @@ class CreateBlogCategoryTable implements RevisionInterface
            $table->addColumn('id', 'int')->length(11)->primaryKey();
            $table->addColumn('created', 'int')->length(11);
            $table->addColumn('updated', 'int')->length(11);
-           $table->addColumn('title', 'varchar')->length(255);
-           $table->addColumn('slug', 'varchar')->length(255);
+           $table->addColumn('title_nl', 'varchar')->length(255);
+           $table->addColumn('title_fr', 'varchar')->length(255);
+           $table->addColumn('title_en', 'varchar')->length(255);
+           $table->addColumn('slug_nl', 'varchar')->length(255);
+           $table->addColumn('slug_fr', 'varchar')->length(255);
+           $table->addColumn('slug_en', 'varchar')->length(255);
            $table->addColumn('sort_index', 'int')->length(11);
            $table->addColumn('is_visible', 'tinyint')->length(1);
 

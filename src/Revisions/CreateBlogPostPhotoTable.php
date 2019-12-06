@@ -2,12 +2,12 @@
 
 namespace Tnt\Blog\Revisions;
 
+use dry\db\Connection;
 use Oak\Contracts\Migration\RevisionInterface;
 use Tnt\Dbi\QueryBuilder;
 use Tnt\Dbi\TableBuilder;
-use dry\db\Connection;
 
-class CreateBlogAuthorTable implements RevisionInterface
+class CreateBlogPostPhotoTable implements RevisionInterface
 {
     /**
      * @var QueryBuilder
@@ -15,7 +15,7 @@ class CreateBlogAuthorTable implements RevisionInterface
     private $queryBuilder;
 
     /**
-     * CreateBlogPostTable constructor.
+     * CreateBlogPostBlockTable constructor.
      * @param QueryBuilder $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder)
@@ -28,25 +28,17 @@ class CreateBlogAuthorTable implements RevisionInterface
      */
     public function up()
     {
-        $this->queryBuilder->table('blog_author')->create(function(TableBuilder $table) {
+        $this->queryBuilder->table('blog_post_photo')->create(function (TableBuilder $table) {
 
             $table->addColumn('id', 'int')->length(11)->primaryKey();
             $table->addColumn('created', 'int')->length(11);
             $table->addColumn('updated', 'int')->length(11);
-            $table->addColumn('first_name', 'varchar')->length(255);
-            $table->addColumn('last_name', 'varchar')->length(255);
-            $table->addColumn('function_nl', 'varchar')->length(255);
-            $table->addColumn('function_fr', 'varchar')->length(255);
-            $table->addColumn('function_en', 'varchar')->length(255);
-            $table->addColumn('short_bio_nl', 'varchar')->length(255);
-            $table->addColumn('short_bio_fr', 'varchar')->length(255);
-            $table->addColumn('short_bio_en', 'varchar')->length(255);
-            $table->addColumn('email', 'varchar')->length(255);
             $table->addColumn('sort_index', 'int')->length(11);
-            $table->addColumn('is_visible', 'tinyint')->length(1);
-            $table->addColumn('photo', 'int')->length(11);
+            $table->addColumn('photo', 'int')->length(11)->null();
+            $table->addColumn('blog_post', 'int')->length(11);
 
             $table->addForeignKey('photo', 'dry_media_file');
+            $table->addForeignKey('blog_post', 'blog_post');
 
         });
 
@@ -60,7 +52,7 @@ class CreateBlogAuthorTable implements RevisionInterface
      */
     public function down()
     {
-        $this->queryBuilder->table('blog_author')->drop();
+        $this->queryBuilder->table('blog_post_photo')->drop();
 
         $this->queryBuilder->build();
 
@@ -72,7 +64,7 @@ class CreateBlogAuthorTable implements RevisionInterface
      */
     public function describeUp(): string
     {
-        return 'Create blog_author table';
+        return 'Create blog_post_photo table';
     }
 
     /**
@@ -80,6 +72,6 @@ class CreateBlogAuthorTable implements RevisionInterface
      */
     public function describeDown(): string
     {
-        return 'Drop blog_author table';
+        return 'Drop blog_post_photo table';
     }
 }

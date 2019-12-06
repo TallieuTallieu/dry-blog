@@ -3,6 +3,7 @@
 namespace Tnt\Blog\Admin;
 
 use dry\admin\component\EnumSwitcher;
+use dry\admin\component\I18nSwitcher;
 use Tnt\Blog\Model\BlogPostBlock;
 
 use dry\admin\component\EnumView;
@@ -20,51 +21,95 @@ use dry\orm\sort\DragSorter;
 
 class BlogPostBlockManager extends Manager
 {
-    public function __construct()
+    public function __construct(array $blockTypes, array $languages)
     {
         parent::__construct(BlogPostBlock::class, [
-            'singular' => 'content block',
+            'singular' => 'content',
+            'plural' => 'content'
         ]);
 
-        $this->actions[] = $create = new Create([
-            new EnumSwitcher('type', [
-                [BlogPostBlock::TYPE_PHOTO_TEXT, 'Text & photo', [
-                    new StringEdit('title'),
-                    new Stack( Stack::HORIZONTAL, [
-                        new Picker( 'photo' ),
-                        new RichtextEdit2('text'),
+        $blockContent = [];
+        $blockContentComponents = [];
+
+        foreach ($languages as $language) {
+            if (in_array('text-photo', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_PHOTO_TEXT, 'Text & photo', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
                     ]),
-                ]],
-                [BlogPostBlock::TYPE_PHOTO_TEXT, 'Photo & text', [
-                    new StringEdit('title'),
-                    new Stack( Stack::HORIZONTAL, [
-                        new RichtextEdit2('text'),
-                        new Picker( 'photo' ),
+                    new Stack(Stack::HORIZONTAL, [
+                        new Picker('photo'),
+                        new RichtextEdit2('body_'.$language, [
+                            'label' => 'body',
+                        ]),
                     ]),
-                ]],
-                [BlogPostBlock::TYPE_PHOTO, 'Photo', [
-                    new Picker( 'photo', [
+                ]];
+            }
+
+            if (in_array('photo-text', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_PHOTO_TEXT, 'Photo & text', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
+                    new Stack(Stack::HORIZONTAL, [
+                        new RichtextEdit2('body_'.$language, [
+                            'label' => 'body',
+                        ]),
+                        new Picker('photo'),
+                    ]),
+                ]];
+            }
+
+            if (in_array('photo', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_PHOTO, 'Photo', [
+                    new Picker('photo', [
                         'v8n_required' => TRUE,
                     ]),
-                ]],
-                [BlogPostBlock::TYPE_TEXT, 'Text', [
-                    new StringEdit('title'),
-                    new RichtextEdit2('text'),
-                ]],
-                [BlogPostBlock::TYPE_TEXTFRAME, 'Textframe', [
-                    new StringEdit('title'),
-                    new RichtextEdit2('text'),
-                ]],
-            ], [
+                ]];
+            }
+
+            if (in_array('text', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_TEXT, 'Text', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
+                    new RichtextEdit2('body_'.$language, [
+                        'label' => 'body',
+                    ]),
+                ]];
+            }
+
+            if (in_array('textframe', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_TEXTFRAME, 'Textframe', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
+                    new RichtextEdit2('body_'.$language, [
+                        'label' => 'body',
+                    ]),
+                ]];
+            }
+
+            $blockContentComponents[$language] = new EnumSwitcher('type', $blockContent, [
                 'mode' => EnumSwitcher::TABS,
-            ]),
-        ]);
+            ]);
+
+            $blockContent = [];
+        }
+
+        $blockContentContainer = $blockContentComponents[$languages[0]];
+
+        if (count($languages) > 1) {
+            $blockContentContainer = new I18nSwitcher($blockContentComponents);
+        }
+
+        $this->actions[] = $create = new Create([$blockContentContainer]);
 
         $this->actions[] = $edit = new Edit($create->components);
 
         $this->actions[] = $delete = new Delete();
 
-        $this->header[] = $create->create_link('Add block');
+        $this->header[] = $create->create_link('Add content block');
 
         $this->index = new Index([
             new SortHandle(),
