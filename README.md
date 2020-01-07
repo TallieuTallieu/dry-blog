@@ -40,6 +40,7 @@ $app->bootstrap();
 ###### Controller
 ```php
 <?php
+
 class blog extends base
 {
     public static function index(Request $request, Page $page)
