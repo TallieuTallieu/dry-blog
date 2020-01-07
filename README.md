@@ -38,6 +38,8 @@ $app->bootstrap();
 ##### Implementation example
  
 ###### Controller
+```php
+<?php
 class blog extends base
 {
     public static function index(Request $request, Page $page)
@@ -56,3 +58,4 @@ class blog extends base
         $tpl->render( 'blog/index.tpl' );
     }
 }
+```
