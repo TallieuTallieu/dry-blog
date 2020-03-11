@@ -90,6 +90,14 @@ class BlogPostBlockManager extends Manager
                 ]];
             }
 
+            if (in_array('quote', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_QUOTE, 'Quote', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
+                ]];
+            }
+
             $blockContentComponents[$language] = new EnumSwitcher('type', $blockContent, [
                 'mode' => EnumSwitcher::TABS,
             ]);

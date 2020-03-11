@@ -71,6 +71,7 @@ class BlogServiceProvider extends ServiceProvider
             'photo',
             'text',
             'textframe',
+            'quote',
         ]);
         $languages = $app->get(RepositoryInterface::class)->get('blog.languages', [
             'nl',
@@ -93,7 +94,7 @@ class BlogServiceProvider extends ServiceProvider
             $modules[] = new BlogCategoryManager($languages);
         }
 
-        if ($hasAuthors) {
+        if ($hasAuthors) {cd
             $modules[] = new BlogAuthorManager($languages);
         }
 
