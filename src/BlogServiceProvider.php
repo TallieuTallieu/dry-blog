@@ -94,7 +94,7 @@ class BlogServiceProvider extends ServiceProvider
             $modules[] = new BlogCategoryManager($languages);
         }
 
-        if ($hasAuthors) {cd
+        if ($hasAuthors) {
             $modules[] = new BlogAuthorManager($languages);
         }
 
