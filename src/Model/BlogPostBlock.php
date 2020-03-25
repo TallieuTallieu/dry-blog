@@ -15,6 +15,8 @@ class BlogPostBlock extends Model
     const TYPE_TEXTFRAME = 'textframe';
     const TYPE_PHOTO = 'photo';
     const TYPE_QUOTE = 'quote';
+    const TYPE_TEXT_QUOTE = 'text_quote';
+    const TYPE_QUOTE_TEXT = 'quote_text';
 
     public static $special_fields = [
         'photo' => File::class,
@@ -30,6 +32,8 @@ class BlogPostBlock extends Model
             [ self::TYPE_PHOTO, 'Photo', ],
             [ self::TYPE_TEXTFRAME, 'Text with frame', ],
             [ self::TYPE_QUOTE, 'Quote', ],
+            [ self::TYPE_TEXT_QUOTE, 'Text & quote', ],
+            [ self::TYPE_QUOTE_TEXT, 'Quote & text', ],
         ];
     }
 }

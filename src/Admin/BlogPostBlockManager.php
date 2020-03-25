@@ -92,8 +92,42 @@ class BlogPostBlockManager extends Manager
 
             if (in_array('quote', $blockTypes)) {
                 $blockContent[] = [BlogPostBlock::TYPE_QUOTE, 'Quote', [
-                    new StringEdit('title_'.$language, [
-                        'label' => 'title',
+                    new StringEdit('quote_'.$language, [
+                        'label' => 'quote',
+                    ]),
+                ]];
+            }
+
+            if (in_array('quote-text', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_QUOTE_TEXT, 'Quote & text', [
+                    new Stack(Stack::HORIZONTAL, [
+                        new StringEdit('quote_'.$language, [
+                            'label' => 'quote',
+                            'multiline' => true,
+                            'height' => 75,
+                        ]),
+                        new RichtextEdit2('body_'.$language, [
+                            'label' => 'body',
+                        ]),
+                    ], [
+                        'grid' => [2,3]
+                    ]),
+                ]];
+            }
+
+            if (in_array('text-quote', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_TEXT_QUOTE, 'Text & quote', [
+                    new Stack(Stack::HORIZONTAL, [
+                        new RichtextEdit2('body_'.$language, [
+                            'label' => 'body',
+                        ]),
+                        new StringEdit('quote_'.$language, [
+                            'label' => 'quote',
+                            'multiline' => true,
+                            'height' => 75,
+                        ]),
+                    ], [
+                        'grid' => [3,2]
                     ]),
                 ]];
             }

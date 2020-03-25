@@ -17,6 +17,7 @@ use Tnt\Blog\Revisions\CreateBlogAuthorTable;
 use Tnt\Blog\Revisions\CreateBlogPostBlockTable;
 use Tnt\Blog\Revisions\CreateBlogPostPhotoTable;
 use Tnt\Blog\Revisions\CreateBlogPostTable;
+use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
 
 class BlogServiceProvider extends ServiceProvider
 {
@@ -47,6 +48,7 @@ class BlogServiceProvider extends ServiceProvider
                 CreateBlogPostTable::class,
                 CreateBlogPostBlockTable::class,
                 CreateBlogPostPhotoTable::class,
+                UpdateBlogPostBlockAddQuote::class,
             ]);
 
             $app->get(MigrationManager::class)
@@ -68,15 +70,13 @@ class BlogServiceProvider extends ServiceProvider
         $blockTypes = $app->get(RepositoryInterface::class)->get('blog.types', [
             'text-photo',
             'photo-text',
-            'photo',
             'text',
-            'textframe',
             'quote',
         ]);
         $languages = $app->get(RepositoryInterface::class)->get('blog.languages', [
             'nl',
             'en',
-            'fr'
+            'fr',
         ]);
 
         $modules = [
