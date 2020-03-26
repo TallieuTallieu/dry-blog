@@ -20,8 +20,8 @@ categories          | true
 authors             | true
 photos              | true
 advanced-layout     | true
-types               | [text-photo, photo-text, text, text-frame]
-languages           | [nl, en, fr]
+types               | ['text-photo', 'photo-text', 'text', 'text-frame', 'quote', 'quote-text', 'text-quote']
+languages           | ['nl', 'en', 'fr']
 
 #### Usage
 
