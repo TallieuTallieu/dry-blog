@@ -11,6 +11,7 @@ use Oak\ServiceProvider;
 use Tnt\Blog\Admin\BlogCategoryManager;
 use Tnt\Blog\Admin\BlogAuthorManager;
 use Tnt\Blog\Admin\BlogPostManager;
+use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
 use Tnt\Blog\Revisions\CreateBlogCategoryTable;
 use Tnt\Blog\Revisions\CreateBlogAuthorTable;
@@ -28,6 +29,7 @@ class BlogServiceProvider extends ServiceProvider
     public function register(ContainerInterface $app)
     {
         $app->set(BlogPostRepositoryInterface::class, BlogPostRepository::class);
+        $app->set(BlogCategoryRepositoryInterface::class, BlogCategoryRepository::class);
     }
 
     /**

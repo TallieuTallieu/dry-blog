@@ -3,10 +3,12 @@
 namespace Tnt\Blog;
 
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
+use Tnt\Blog\Model\BlogCategory;
 use Tnt\Blog\Model\BlogPost;
 use Tnt\DataList\Contracts\Paginate\PaginatableInterface;
 use Tnt\DataList\Paginate\PaginatableTrait;
 use Tnt\Dbi\BaseRepository;
+use Tnt\Dbi\Criteria\Equals;
 use Tnt\Dbi\Criteria\GreaterThan;
 use Tnt\Dbi\Criteria\IsTrue;
 use Tnt\Dbi\Criteria\LessThan;
@@ -61,6 +63,17 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     {
         $this->addCriteria(new NotEquals('id', $blogPost->id));
         $this->addCriteria(new GreaterThan('publication_date', $blogPost->publication_date));
+
+        return $this;
+    }
+
+    /**
+     * @param BlogCategory $category
+     * @return BlogPostRepositoryInterface
+     */
+    public function categorical(BlogCategory $category): BlogPostRepositoryInterface
+    {
+        $this->addCriteria(new Equals('category', $category));
 
         return $this;
     }

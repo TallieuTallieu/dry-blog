@@ -23,7 +23,10 @@ class BlogPostBlock extends Model
         'blog_post' => BlogPost::class,
     ];
 
-    public static function get_type_enum()
+    /**
+     * @return array
+     */
+    public static function get_type_enum(): array
     {
         return [
             [ self::TYPE_TEXT_PHOTO, 'Text & photo', ],

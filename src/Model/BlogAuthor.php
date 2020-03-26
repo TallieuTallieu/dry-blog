@@ -4,6 +4,7 @@ namespace Tnt\Blog\Model;
 
 use dry\media\File;
 use dry\orm\Model;
+use dry\orm\relationship\HasMany;
 use dry\orm\special\Boolean;
 
 class BlogAuthor extends Model
@@ -15,15 +16,20 @@ class BlogAuthor extends Model
         'is_visible' => Boolean::class,
     ];
 
-    public function get_posts()
+    /**
+     * @return \dry\orm\relationship\HasMany
+     */
+    public function get_posts(): HasMany
     {
         return $this->has_many(BlogPost::class, 'author');
     }
 
-    public function delete()
+    /**
+     *
+     */
+    public function delete(): void
     {
-        foreach( $this->posts as $p )
-        {
+        foreach($this->posts as $p) {
             $p->author = NULL;
             $p->save();
         }
@@ -31,8 +37,11 @@ class BlogAuthor extends Model
         parent::delete();
     }
 
-    public function __toString()
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->first_name.' '.$this->last_name;
     }
 }

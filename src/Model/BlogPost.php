@@ -4,6 +4,7 @@ namespace Tnt\Blog\Model;
 
 use dry\media\File;
 use dry\orm\Model;
+use dry\orm\relationship\HasMany;
 use dry\orm\special\Boolean;
 
 class BlogPost extends Model
@@ -20,7 +21,10 @@ class BlogPost extends Model
         'is_visible' => Boolean::class,
     ];
 
-    public static function get_layout_enum()
+    /**
+     * @return array
+     */
+    public static function get_layout_enum(): array
     {
         return [
             [self::LAYOUT_SIDEBAR, 'With sidebar'],
@@ -28,17 +32,26 @@ class BlogPost extends Model
         ];
     }
 
-    public function get_blocks()
+    /**
+     * @return \dry\orm\relationship\HasMany
+     */
+    public function get_blocks(): HasMany
     {
         return $this->has_many(BlogPostBlock::class, 'blog_post', 'ORDER BY sort_index');
     }
 
-    public function get_photos()
+    /**
+     * @return \dry\orm\relationship\HasMany
+     */
+    public function get_photos(): HasMany
     {
         return $this->has_many(BlogPostPhoto::class, 'blog_post', 'ORDER BY sort_index');
     }
 
-    public function delete()
+    /**
+     *
+     */
+    public function delete(): void
     {
         foreach($this->blocks as $b) {
             $b->delete();

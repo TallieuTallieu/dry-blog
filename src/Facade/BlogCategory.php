@@ -3,15 +3,15 @@
 namespace Tnt\Blog\Facade;
 
 use Oak\Facade;
-use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
+use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 
-class BlogPosts extends Facade
+class BlogCategory extends Facade
 {
     /**
      * @return string
      */
     protected static function getContract(): string
     {
-        return BlogPostRepositoryInterface::class;
+        return BlogCategoryRepositoryInterface::class;
     }
 }
