@@ -33,7 +33,7 @@ class BlogPostBlockManager extends Manager
 
         foreach ($languages as $language) {
             if (in_array('text-photo', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_PHOTO_TEXT, 'Text & photo', [
+                $blockContent[] = [BlogPostBlock::TYPE_TEXT_PHOTO, 'Text & photo', [
                     new StringEdit('title_'.$language, [
                         'label' => 'title',
                     ]),
