@@ -38,10 +38,10 @@ class BlogPostBlockManager extends Manager
                         'label' => 'title',
                     ]),
                     new Stack(Stack::HORIZONTAL, [
-                        new Picker('photo'),
                         new RichtextEdit2('body_'.$language, [
                             'label' => 'body',
                         ]),
+                        new Picker('photo'),
                     ]),
                 ]];
             }
@@ -52,10 +52,10 @@ class BlogPostBlockManager extends Manager
                         'label' => 'title',
                     ]),
                     new Stack(Stack::HORIZONTAL, [
+                        new Picker('photo'),
                         new RichtextEdit2('body_'.$language, [
                             'label' => 'body',
                         ]),
-                        new Picker('photo'),
                     ]),
                 ]];
             }
