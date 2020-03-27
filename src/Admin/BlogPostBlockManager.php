@@ -100,6 +100,9 @@ class BlogPostBlockManager extends Manager
 
             if (in_array('quote-text', $blockTypes)) {
                 $blockContent[] = [BlogPostBlock::TYPE_QUOTE_TEXT, 'Quote & text', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
                     new Stack(Stack::HORIZONTAL, [
                         new StringEdit('quote_'.$language, [
                             'label' => 'quote',
@@ -117,6 +120,9 @@ class BlogPostBlockManager extends Manager
 
             if (in_array('text-quote', $blockTypes)) {
                 $blockContent[] = [BlogPostBlock::TYPE_TEXT_QUOTE, 'Text & quote', [
+                    new StringEdit('title_'.$language, [
+                        'label' => 'title',
+                    ]),
                     new Stack(Stack::HORIZONTAL, [
                         new RichtextEdit2('body_'.$language, [
                             'label' => 'body',
