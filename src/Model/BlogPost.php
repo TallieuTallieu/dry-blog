@@ -63,4 +63,12 @@ class BlogPost extends Model
 
         parent::delete();
     }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->title_nl;
+    }
 }
