@@ -63,7 +63,8 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function next(BlogPost $blogPost): BlogPostRepositoryInterface
     {
         $this->addCriteria(new NotEquals('id', $blogPost->id));
-        $this->addCriteria(new GreaterThan('publication_date', $blogPost->publication_date));
+        $this->addCriteria(new GreaterThan('publication_date', $blogPost->publication_date));));
+        $this->addCriteria(new OrderBy('publication_date', 'ASC'));
 
         return $this;
     }
