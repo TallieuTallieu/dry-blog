@@ -69,6 +69,6 @@ class BlogPost extends Model
      */
     public function __toString(): string
     {
-        return $this->title_nl;
+        return $this->title_en ? $this->title_en : ( $this->title_nl ? $this->title_nl : $this->title_fr );
     }
 }
