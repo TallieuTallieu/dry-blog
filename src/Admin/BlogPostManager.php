@@ -3,6 +3,8 @@
 namespace Tnt\Blog\Admin;
 
 use dry\admin\component\I18nSwitcher;
+use dry\admin\component\Popout;
+use dry\orm\action\Execute;
 use Tnt\Blog\Model\BlogPost;
 
 use dry\admin\component\BooleanEdit;
@@ -26,6 +28,8 @@ use dry\orm\IndexRow;
 use dry\orm\Manager;
 use dry\orm\paginate\Paginator;
 use dry\orm\sort\StaticSorter;
+use Tnt\Blog\Model\BlogPostBlock;
+use Tnt\Blog\Model\BlogPostPhoto;
 
 class BlogPostManager extends Manager
 {
@@ -184,6 +188,77 @@ class BlogPostManager extends Manager
             ] ];
         }
 
+        $this->actions[] = $duplicate = new Execute(function ($row) {
+
+            $blogPost = new BlogPost();
+            $blogPost->created = time();
+            $blogPost->updated = time();
+            $blogPost->title_nl = $row->title_nl.' (duplicate)';
+            $blogPost->title_fr = $row->title_fr.' (duplicate)';
+            $blogPost->title_en = $row->title_en.' (duplicate)';
+            $blogPost->slug_nl = $row->slug_nl.'-duplicate';
+            $blogPost->slug_fr = $row->slug_fr.'-duplicate';
+            $blogPost->slug_en = $row->slug_en.'-duplicate';
+            $blogPost->intro_text_nl = $row->intro_text_nl;
+            $blogPost->intro_text_fr = $row->intro_text_fr;
+            $blogPost->intro_text_en = $row->intro_text_en;
+            $blogPost->badge_text_nl = $row->badge_text_nl;
+            $blogPost->badge_text_fr = $row->badge_text_fr;
+            $blogPost->badge_text_en = $row->badge_text_en;
+            $blogPost->cta_title_nl = $row->cta_title_nl;
+            $blogPost->cta_title_fr = $row->cta_title_fr;
+            $blogPost->cta_title_en = $row->cta_title_en;
+            $blogPost->cta_url_nl = $row->cta_url_nl;
+            $blogPost->cta_url_fr = $row->cta_url_fr;
+            $blogPost->cta_url_en = $row->cta_url_en;
+            $blogPost->sort_index = $row->sort_index++;
+            $blogPost->publication_date = $row->publication_date;
+            $blogPost->is_visible = false;
+            $blogPost->layout = $row->layout;
+            $blogPost->photo = $row->photo;
+            $blogPost->category = $row->category;
+            $blogPost->author = $row->author;
+            $blogPost->save();
+
+            foreach ($row->blocks as $block) {
+
+                $blogPostBlock = new BlogPostBlock();
+                $blogPostBlock->created = time();
+                $blogPostBlock->updated = time();
+                $blogPostBlock->blog_post = $blogPost;
+                $blogPostBlock->type = $block->type;
+                $blogPostBlock->sort_index = $block->sort_index;
+                $blogPostBlock->photo = $block->photo;
+                $blogPostBlock->title_nl = $block->title_nl;
+                $blogPostBlock->title_fr = $block->title_fr;
+                $blogPostBlock->title_en = $block->title_en;
+                $blogPostBlock->body_nl = $block->body_nl;
+                $blogPostBlock->body_fr = $block->body_fr;
+                $blogPostBlock->body_en = $block->body_en;
+                $blogPostBlock->quote_nl = $block->quote_nl;
+                $blogPostBlock->quote_fr = $block->quote_fr;
+                $blogPostBlock->quote_en = $block->quote_en;
+                $blogPostBlock->save();
+            }
+
+            foreach ($row->photos as $photo) {
+
+                $blogPostPhoto = new BlogPostPhoto();
+                $blogPostPhoto->created = time();
+                $blogPostPhoto->updated = time();
+                $blogPostPhoto->blog_post = $blogPost;
+                $blogPostPhoto->sort_index = $photo->sort_index;
+                $blogPostPhoto->photo = $photo->photo;
+                $blogPostPhoto->save();
+            }
+
+            return 'Blog post duplicated';
+
+        }, [
+            'id' => 'duplicate',
+            'icon' => Execute::ICON_DUPLICATE,
+        ]);
+
         $this->actions[] = $delete = new Delete();
 
         $this->header[] = $create->create_link('Add post');
@@ -195,6 +270,9 @@ class BlogPostManager extends Manager
             new DateView('publication_date'),
             $edit->create_link(),
             $delete->create_link(),
+            new Popout([
+                $duplicate->create_link(),
+            ])
         ],[
             'field_to_row_class' => [
                 'is_visible', NULL, IndexRow::STYLE_DISABLED
