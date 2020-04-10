@@ -18,6 +18,7 @@ use Tnt\Blog\Revisions\CreateBlogAuthorTable;
 use Tnt\Blog\Revisions\CreateBlogPostBlockTable;
 use Tnt\Blog\Revisions\CreateBlogPostPhotoTable;
 use Tnt\Blog\Revisions\CreateBlogPostTable;
+use Tnt\Blog\Revisions\UpdateBlogPostAddIsPrivate;
 use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
 
 class BlogServiceProvider extends ServiceProvider
@@ -51,6 +52,7 @@ class BlogServiceProvider extends ServiceProvider
                 CreateBlogPostBlockTable::class,
                 CreateBlogPostPhotoTable::class,
                 UpdateBlogPostBlockAddQuote::class,
+                UpdateBlogPostAddIsPrivate::class,
             ]);
 
             $app->get(MigrationManager::class)
@@ -69,6 +71,7 @@ class BlogServiceProvider extends ServiceProvider
         $hasAuthors = $app->get(RepositoryInterface::class)->get('blog.authors', true);
         $hasPhotos = $app->get(RepositoryInterface::class)->get('blog.photos', true);
         $advancedLayout = $app->get(RepositoryInterface::class)->get('blog.advanced-layout', true);
+        $isPrivate = $app->get(RepositoryInterface::class)->get('blog.private', false);
         $blockTypes = $app->get(RepositoryInterface::class)->get('blog.types', [
             'text-photo',
             'photo-text',
@@ -87,6 +90,7 @@ class BlogServiceProvider extends ServiceProvider
                 'authors' => $hasAuthors,
                 'photos' => $hasPhotos,
                 'advancedLayout' => $advancedLayout,
+                'isPrivate' => $isPrivate,
                 'blockTypes' => $blockTypes,
                 'languages' => $languages,
             ]),

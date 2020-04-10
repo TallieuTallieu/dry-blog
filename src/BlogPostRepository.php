@@ -2,6 +2,7 @@
 
 namespace Tnt\Blog;
 
+use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
 use Tnt\Blog\Model\BlogCategory;
 use Tnt\Blog\Model\BlogPost;
@@ -10,6 +11,7 @@ use Tnt\DataList\Paginate\PaginatableTrait;
 use Tnt\Dbi\BaseRepository;
 use Tnt\Dbi\Criteria\Equals;
 use Tnt\Dbi\Criteria\GreaterThan;
+use Tnt\Dbi\Criteria\IsFalse;
 use Tnt\Dbi\Criteria\IsTrue;
 use Tnt\Dbi\Criteria\LessThan;
 use Tnt\Dbi\Criteria\LessThanOrEqual;
@@ -76,6 +78,26 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function categorical(BlogCategory $category): BlogPostRepositoryInterface
     {
         $this->addCriteria(new Equals('category', $category));
+
+        return $this;
+    }
+
+    /**
+     * @return BlogPostRepositoryInterface
+     */
+    public function isPrivate(): BlogPostRepositoryInterface
+    {
+        $this->addCriteria(new IsTrue('is_private'));
+
+        return $this;
+    }
+
+    /**
+     * @return BlogPostRepositoryInterface
+     */
+    public function isPublic(): BlogPostRepositoryInterface
+    {
+        $this->addCriteria(new IsFalse('is_private'));
 
         return $this;
     }

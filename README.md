@@ -22,6 +22,7 @@ photos              | true
 advanced-layout     | true
 types               | ['text-photo', 'photo-text', 'text', 'text-frame', 'quote', 'quote-text', 'text-quote']
 languages           | ['nl', 'en', 'fr']
+private             | false
 
 #### Usage
 

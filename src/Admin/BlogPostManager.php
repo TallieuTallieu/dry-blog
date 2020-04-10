@@ -39,6 +39,7 @@ class BlogPostManager extends Manager
         $authors = true;
         $photos = true;
         $advancedLayout = true;
+        $isPrivate = false;
         $blockTypes = [];
         $languages = [];
 
@@ -149,6 +150,10 @@ class BlogPostManager extends Manager
 
         if ($advancedLayout) {
             array_unshift($sidebarContent, new EnumEdit('layout', BlogPost::get_layout_enum()));
+        }
+
+        if ($isPrivate) {
+            $sidebarContent[] = new BooleanEdit('is_private');
         }
 
         $this->actions[] = $edit = new Edit([
