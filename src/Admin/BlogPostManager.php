@@ -4,7 +4,9 @@ namespace Tnt\Blog\Admin;
 
 use dry\admin\component\I18nSwitcher;
 use dry\admin\component\Popout;
+use dry\http\Response;
 use dry\orm\action\Execute;
+use dry\route\Router;
 use Tnt\Blog\Model\BlogPost;
 
 use dry\admin\component\BooleanEdit;
@@ -271,7 +273,18 @@ class BlogPostManager extends Manager
         $this->footer[] = new Pagination();
 
         $this->index = new Index([
-            new StringView('title_'.$languages[0]),
+            new StringView('title_'.$languages[0], [
+                'link' => function ($row) use ($languages) {
+
+                    Response::$language = $languages[0];
+
+                    if (isset(Router::$urls[Response::$language]['blog::view'])) {
+                        return \dry\url('blog::view', $row);
+                    }
+
+                    return '#';
+                }
+            ]),
             new DateView('publication_date'),
             $edit->create_link(),
             $delete->create_link(),
