@@ -11,6 +11,7 @@ use Oak\ServiceProvider;
 use Tnt\Blog\Admin\BlogCategoryManager;
 use Tnt\Blog\Admin\BlogAuthorManager;
 use Tnt\Blog\Admin\BlogPostManager;
+use Tnt\Blog\Contracts\BlogPortalInterface;
 use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
 use Tnt\Blog\Revisions\CreateBlogCategoryTable;
@@ -23,6 +24,8 @@ use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
 
 class BlogServiceProvider extends ServiceProvider
 {
+    protected $isLazy = true;
+
     /**
      * @param ContainerInterface $app
      * @return mixed|void
@@ -31,6 +34,10 @@ class BlogServiceProvider extends ServiceProvider
     {
         $app->set(BlogPostRepositoryInterface::class, BlogPostRepository::class);
         $app->set(BlogCategoryRepositoryInterface::class, BlogCategoryRepository::class);
+
+        $app->set(BlogPortalInterface::class, function() use ($app) {
+            return $this->registerPortal($app);
+        });
     }
 
     /**
@@ -59,13 +66,19 @@ class BlogServiceProvider extends ServiceProvider
                 ->addMigrator($migrator);
         }
 
-        $this->registerAdminModules($app);
+        $this->registerPortal($app);
+    }
+
+    public function provides(): array
+    {
+        return [BlogPortalInterface::class];
     }
 
     /**
      * @param ContainerInterface $app
+     * @return Portal
      */
-    private function registerAdminModules(ContainerInterface $app)
+    private function registerPortal(ContainerInterface $app)
     {
         $hasCategories = $app->get(RepositoryInterface::class)->get('blog.categories', true);
         $hasAuthors = $app->get(RepositoryInterface::class)->get('blog.authors', true);
@@ -104,6 +117,6 @@ class BlogServiceProvider extends ServiceProvider
             $modules[] = new BlogAuthorManager($languages);
         }
 
-        array_unshift(\dry\admin\Router::$modules, new Portal('blog', 'Blog', $modules));
+        return new Portal('blog', 'Blog', $modules);
     }
 }
