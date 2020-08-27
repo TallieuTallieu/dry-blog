@@ -24,7 +24,6 @@ use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
 
 class BlogServiceProvider extends ServiceProvider
 {
-    protected $isLazy = true;
 
     /**
      * @param ContainerInterface $app
