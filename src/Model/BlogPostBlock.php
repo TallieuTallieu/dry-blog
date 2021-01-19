@@ -17,9 +17,16 @@ class BlogPostBlock extends Model
     const TYPE_QUOTE = 'quote';
     const TYPE_TEXT_QUOTE = 'text_quote';
     const TYPE_QUOTE_TEXT = 'quote_text';
+    const TYPE_TEXT_VIDEO = 'text_video';
+    const TYPE_VIDEO_TEXT = 'video_text';
+
+    const VIDEO_TYPE_FILE = 'file';
+    const VIDEO_TYPE_VIMEO = 'vimeo';
+    const VIDEO_TYPE_YOUTUBE = 'youtube';
 
     public static $special_fields = [
         'photo' => File::class,
+        'video' => File::class,
         'blog_post' => BlogPost::class,
     ];
 
@@ -37,6 +44,8 @@ class BlogPostBlock extends Model
             [ self::TYPE_QUOTE, 'Quote', ],
             [ self::TYPE_TEXT_QUOTE, 'Text & quote', ],
             [ self::TYPE_QUOTE_TEXT, 'Quote & text', ],
+            [ self::TYPE_TEXT_VIDEO, 'Text & video', ],
+            [ self::TYPE_VIDEO_TEXT, 'Video & text', ],
         ];
     }
 }
