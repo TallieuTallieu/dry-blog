@@ -50,7 +50,7 @@ class BlogPost extends Model
     }
 
     /**
-     *
+     * Delete item
      */
     public function delete(): void
     {

@@ -52,9 +52,15 @@ class UpdateBlogPostBlockAddVideo implements RevisionInterface
     {
         $this->queryBuilder->table('blog_post_block')->alter(function (TableBuilder $table) {
 
-            $table->dropColumn('quote_nl');
-            $table->dropColumn('quote_fr');
-            $table->dropColumn('quote_en');
+            $table->dropColumn('media_credit_nl');
+            $table->dropColumn('media_credit_fr');
+            $table->dropColumn('media_credit_en');
+
+            $table->dropColumn('video_type');
+            $table->dropColumn('video_id');
+
+            $table->dropColumn('video');
+            $table->dropForeignKey('video', 'dry_media_file');
 
         });
 

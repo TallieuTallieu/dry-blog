@@ -98,6 +98,13 @@ class BlogServiceProvider extends ServiceProvider
             'fr',
         ]);
 
+        $requiredFields = $app->get(RepositoryInterface::class)->get('blog.required-fields', [
+            'title',
+            'slug',
+            'photo',
+            'publication_date'
+        ]);
+
         $modules = [
             new BlogPostManager([
                 'categories' => $hasCategories,
@@ -107,15 +114,16 @@ class BlogServiceProvider extends ServiceProvider
                 'isPrivate' => $isPrivate,
                 'blockTypes' => $blockTypes,
                 'languages' => $languages,
+                'requiredFields' => $requiredFields
             ]),
         ];
 
         if ($hasCategories) {
-            $modules[] = new BlogCategoryManager($languages);
+            $modules['categories'] = new BlogCategoryManager($languages);
         }
 
         if ($hasAuthors) {
-            $modules[] = new BlogAuthorManager($languages);
+            $modules['authors'] = new BlogAuthorManager($languages);
         }
 
         return new Portal('blog', 'Blog', $modules);

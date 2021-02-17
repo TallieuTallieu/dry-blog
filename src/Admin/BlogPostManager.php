@@ -35,6 +35,12 @@ use Tnt\Blog\Model\BlogPostPhoto;
 
 class BlogPostManager extends Manager
 {
+    public $edit;
+
+    public $tabbedContent;
+
+    public $requiredFields = [];
+
     public function __construct(array $kwargs = [])
     {
         $categories = true;
@@ -44,8 +50,11 @@ class BlogPostManager extends Manager
         $isPrivate = false;
         $blockTypes = [];
         $languages = [];
+        $requiredFields = [];
 
         extract( $kwargs, EXTR_IF_EXISTS );
+
+        $this->requiredFields = $requiredFields;
 
         parent::__construct(BlogPost::class, [
             'icon' => Module::ICON_DOCUMENT,
@@ -59,12 +68,12 @@ class BlogPostManager extends Manager
         foreach ($languages as $language) {
             $generalComponents[$language] = [
                 new StringEdit('title_'.$language, [
-                    'v8n_required' => TRUE,
+                    'v8n_required' => $this->isRequired('title'),
                     'suggest_slug' => 'slug_'.$language,
                     'label' => 'title',
                 ]),
                 new StringEdit('slug_'.$language, [
-                    'v8n_required' => TRUE,
+                    'v8n_required' => $this->isRequired('slug'),
                     'handle_duplicate' => TRUE,
                     'slugify_on_blur' => TRUE,
                     'label' => 'slug',
@@ -73,18 +82,22 @@ class BlogPostManager extends Manager
 
             $contentComponents[$language] = [
                 new StringEdit('intro_text_'.$language, [
+                    'v8n_required' => $this->isRequired('intro_text'),
                     'multiline' => TRUE,
                     'height' => 60,
                     'label' => 'intro text',
                 ]),
                 new StringEdit('badge_text_'.$language, [
+                    'v8n_required' => $this->isRequired('badge_text'),
                     'label' => 'badge text',
                 ]),
                 new Stack(Stack::HORIZONTAL, [
                     new StringEdit('cta_title_'.$language, [
+                        'v8n_required' => $this->isRequired('cta_title'),
                         'label' => 'title'
                     ]),
                     new StringEdit('cta_url_'.$language, [
+                        'v8n_required' => $this->isRequired('cta_url'),
                         'label' => 'url'
                     ]),
                 ], [
@@ -102,33 +115,7 @@ class BlogPostManager extends Manager
             $contentComponentsContainer = new I18nSwitcher($contentComponents);
         }
 
-        $this->actions[] = $create = new Create([
-            $generalComponentsContainer,
-            new DateEdit('publication_date', [
-                'v8n_required' => TRUE,
-            ]),
-            new Picker('photo', [
-                'v8n_required' => TRUE,
-                'v8n_mimetype' => [
-                    'image/jpeg',
-                    'image/png',
-                ],
-            ]),
-        ], [
-            'mode' => Create::MODE_POPUP,
-        ]);
-
-        if ($advancedLayout) {
-            array_unshift($create->components, new EnumEdit('layout', BlogPost::get_layout_enum()));
-        }
-
-        if ($categories) {
-            $create->components[] = new ForeignKeySelect('category', [
-                'to_string' => 'title_'.$languages[0],
-            ]);
-        }
-
-        $content = new TabbedContent([
+        $this->tabbedContent = new TabbedContent([
             ['General', [
                 $contentComponentsContainer,
             ]],
@@ -142,10 +129,10 @@ class BlogPostManager extends Manager
         $sidebarContent = [
             $generalComponentsContainer,
             new DateEdit('publication_date', [
-                'v8n_required' => TRUE,
+                'v8n_required' => $this->isRequired('publication_date'),
             ]),
             new Picker('photo', [
-                'v8n_required' => TRUE,
+                'v8n_required' => $this->isRequired('photo'),
             ]),
             new BooleanEdit('is_visible'),
         ];
@@ -158,9 +145,9 @@ class BlogPostManager extends Manager
             $sidebarContent[] = new BooleanEdit('is_private');
         }
 
-        $this->actions[] = $edit = new Edit([
+        $this->actions[] = $create = new Create([
             new Stack(Stack::HORIZONTAL, [
-                $content,
+                $this->tabbedContent,
                 new Stack(Stack::VERTICAL, $sidebarContent, [
                     'title' => 'General information'
                 ]),
@@ -171,8 +158,10 @@ class BlogPostManager extends Manager
             'fixed_footer' => TRUE,
         ]);
 
+        $this->actions[] = $this->edit = new Edit($create->components);
+
         if ($categories) {
-            $content->tabs[] = [ 'Categories', [
+            $this->tabbedContent->tabs[] = [ 'Categories', [
                 new ForeignKeySelect('category', [
                     'to_string' => 'title_'.$languages[0],
                 ]),
@@ -180,7 +169,7 @@ class BlogPostManager extends Manager
         }
 
         if ($authors) {
-            $content->tabs[] = [ 'Author', [
+            $this->tabbedContent->tabs[] = [ 'Author', [
                 new ForeignKeySelect('author', [
                     'null' => TRUE
                 ]),
@@ -188,7 +177,7 @@ class BlogPostManager extends Manager
         }
 
         if ($photos) {
-            $content->tabs[] = [ 'Media', [
+            $this->tabbedContent->tabs[] = [ 'Media', [
                new InlineManager(new BlogPostPhotoManager(), [
                    'restrict_by_foreign_key' => 'blog_post',
                ])
@@ -286,7 +275,7 @@ class BlogPostManager extends Manager
                 }
             ]),
             new DateView('publication_date'),
-            $edit->create_link(),
+            $this->edit->create_link(),
             $delete->create_link(),
             new Popout([
                 $duplicate->create_link(),
@@ -300,5 +289,13 @@ class BlogPostManager extends Manager
         $this->index->sorter = new StaticSorter('publication_date', StaticSorter::DESC);
 
         $this->index->paginator = new Paginator(10);
+    }
+
+    /**
+     * @param $field
+     * @return bool
+     */
+    private function isRequired($field) {
+        return in_array($field, $this->requiredFields);
     }
 }

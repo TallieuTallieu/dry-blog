@@ -20,9 +20,10 @@ categories          | true
 authors             | true
 photos              | true
 advanced-layout     | true
-types               | ['text-photo', 'photo-text', 'text', 'text-frame', 'quote', 'quote-text', 'text-quote']
+types               | ['text-photo', 'photo-text', 'text', 'text-frame', 'quote', 'quote-text', 'text-quote', 'text-video', 'video-text']
 languages           | ['nl', 'en', 'fr']
 private             | false
+required-fields     | ['photo', 'title', 'slug', 'publication_date']
 
 #### Usage
 
