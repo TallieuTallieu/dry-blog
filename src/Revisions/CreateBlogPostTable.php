@@ -49,7 +49,7 @@ class CreateBlogPostTable implements RevisionInterface
             $table->addColumn('publication_date', 'int')->length(11);
             $table->addColumn('is_visible', 'tinyint')->length(1);
             $table->addColumn('layout', 'varchar')->length(255);
-            $table->addColumn('photo', 'int')->length(11);
+            $table->addColumn('photo', 'int')->length(11)->null();
             $table->addColumn('cta_title_nl', 'varchar')->length(255);
             $table->addColumn('cta_title_fr', 'varchar')->length(255);
             $table->addColumn('cta_title_en', 'varchar')->length(255);
