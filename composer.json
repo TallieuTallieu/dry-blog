@@ -2,6 +2,14 @@
   "name": "tallieutallieu/dry-blog",
   "description": "Dry Blog",
   "type": "library",
+  "authors": [
+    {
+      "name": "Dieter Vyncke",
+      "email": "dieter@tnt.be",
+      "homepage": "https://tnt.be",
+      "role": "Developer"
+    }
+  ],
   "require": {
     "reinvanoyen/oak": "^1.0.6",
     "dietervyncke/dry-dbi": "^1.0.2",
