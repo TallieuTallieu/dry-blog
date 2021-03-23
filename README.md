@@ -8,7 +8,7 @@ Blog package for dry including migrations, backend managers, i18n support, categ
 
 #### Installation
 ```ssh
-composer require dietervyncke/dry-blog
+composer require tallieutallieu/dry-blog
 
 php oak migration migrate -m blog
 ```
