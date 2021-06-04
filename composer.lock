@@ -1,0 +1,121 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "e8e2b4f061ce12aeb136b1e140e1a746",
+    "packages": [
+        {
+            "name": "tallieutallieu/dry-datalist",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TallieuTallieu/dry-datalist.git",
+                "reference": "d2d59d58c84ad575303141047968b781d37f0d6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TallieuTallieu/dry-datalist/zipball/d2d59d58c84ad575303141047968b781d37f0d6c",
+                "reference": "d2d59d58c84ad575303141047968b781d37f0d6c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tnt\\DataList\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "support": {
+                "source": "https://github.com/TallieuTallieu/dry-datalist/tree/1.0.6"
+            },
+            "time": "2020-10-13T14:19:29+00:00"
+        },
+        {
+            "name": "tallieutallieu/dry-dbi",
+            "version": "1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TallieuTallieu/dry-dbi.git",
+                "reference": "228e09b68e8a77bbb19f28dc216908a7aa48fe5f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TallieuTallieu/dry-dbi/zipball/228e09b68e8a77bbb19f28dc216908a7aa48fe5f",
+                "reference": "228e09b68e8a77bbb19f28dc216908a7aa48fe5f",
+                "shasum": ""
+            },
+            "require": {
+                "tallieutallieu/oak": "^1.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tnt\\Dbi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Dieter Vyncke",
+                    "email": "vynckedieter@gmail.com"
+                }
+            ],
+            "description": "Improved DRY databases",
+            "support": {
+                "source": "https://github.com/TallieuTallieu/dry-dbi/tree/1.0.8"
+            },
+            "time": "2021-04-15T07:38:50+00:00"
+        },
+        {
+            "name": "tallieutallieu/oak",
+            "version": "1.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TallieuTallieu/oak.git",
+                "reference": "7728d61c695d824783d1e0d496d463870602d86e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TallieuTallieu/oak/zipball/7728d61c695d824783d1e0d496d463870602d86e",
+                "reference": "7728d61c695d824783d1e0d496d463870602d86e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Oak\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Rein Van Oyen",
+                    "email": "reinvanoyen@gmail.com"
+                }
+            ],
+            "description": "Simple PHP building block framework",
+            "keywords": [
+                "container",
+                "dependency injection",
+                "facade",
+                "framework",
+                "library"
+            ],
+            "support": {
+                "source": "https://github.com/TallieuTallieu/oak/tree/1.0.13"
+            },
+            "time": "2020-01-21T10:27:17+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

@@ -11,9 +11,9 @@
     }
   ],
   "require": {
-    "reinvanoyen/oak": "^1.0.6",
-    "dietervyncke/dry-dbi": "^1.0.2",
-    "reinvanoyen/dry-datalist": "^1.0"
+    "tallieutallieu/oak": "^1.0.0",
+    "tallieutallieu/dry-dbi": "^1.0.8",
+    "tallieutallieu/dry-datalist": "^1.0.6"
   },
   "autoload": {
     "psr-4": {

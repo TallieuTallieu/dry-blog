@@ -101,4 +101,20 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
 
         return $this;
     }
+
+    /**
+     * Filter BlogPosts by year.
+     *
+     * @param $year
+     *
+     * @return BlogPostRepositoryInterface
+     */
+    public function yearly($year): BlogPostRepositoryInterface
+    {
+        if ($year) {
+            $this->addCriteria(new Equals(new Raw('FROM_UNIXTIME(publication_date, \'%Y\')'), $year));
+        }
+
+        return $this;
+    }
 }
