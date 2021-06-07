@@ -2,7 +2,6 @@
 
 namespace Tnt\Blog;
 
-use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
 use Tnt\Blog\Model\BlogCategory;
 use Tnt\Blog\Model\BlogPost;
@@ -17,6 +16,7 @@ use Tnt\Dbi\Criteria\LessThan;
 use Tnt\Dbi\Criteria\LessThanOrEqual;
 use Tnt\Dbi\Criteria\NotEquals;
 use Tnt\Dbi\Criteria\OrderBy;
+use Tnt\Dbi\Raw;
 
 class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInterface, PaginatableInterface
 {
