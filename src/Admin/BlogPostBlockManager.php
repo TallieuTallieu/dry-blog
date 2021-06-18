@@ -156,6 +156,10 @@ class BlogPostBlockManager extends Manager
                                             'video/mp4'
                                         ],
                                     ]),
+                                    new Picker('photo', [
+                                        'label' => 'video thumbnail',
+                                        'v8n_required' => true
+                                    ]),
                                     new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
                                 ]],
                                 [BlogPostBlock::VIDEO_TYPE_VIMEO, 'Vimeo', [
