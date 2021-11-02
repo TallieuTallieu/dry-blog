@@ -162,7 +162,7 @@ class BlogPostManager extends Manager
             ], [
                 'grid' => [5, 2],
             ]),
-        ],);
+        ]);
 
         if ($categories) {
             $this->tabbedContent->tabs[] = [ 'Categories', [
