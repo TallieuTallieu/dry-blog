@@ -147,6 +147,14 @@ class BlogPostManager extends Manager
 
         $this->actions[] = $create = new Create([
             new Stack(Stack::HORIZONTAL, [
+                $sidebarContent
+            ]),
+        ], [
+            'popup' => TRUE,
+        ]);
+
+        $this->actions[] = $this->edit = new Edit([
+            new Stack(Stack::HORIZONTAL, [
                 $this->tabbedContent,
                 new Stack(Stack::VERTICAL, $sidebarContent, [
                     'title' => 'General information'
@@ -154,11 +162,7 @@ class BlogPostManager extends Manager
             ], [
                 'grid' => [5, 2],
             ]),
-        ], [
-            'fixed_footer' => TRUE,
-        ]);
-
-        $this->actions[] = $this->edit = new Edit($create->components);
+        ],);
 
         if ($categories) {
             $this->tabbedContent->tabs[] = [ 'Categories', [
