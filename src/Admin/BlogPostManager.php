@@ -146,9 +146,7 @@ class BlogPostManager extends Manager
         }
 
         $this->actions[] = $create = new Create([
-            new Stack(Stack::HORIZONTAL, [
-                $sidebarContent
-            ]),
+            new Stack(Stack::VERTICAL, $sidebarContent),
         ], [
             'popup' => TRUE,
         ]);
