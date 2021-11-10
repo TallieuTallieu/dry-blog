@@ -270,7 +270,7 @@ class BlogPostManager extends Manager
 
         foreach ($croppers as $crop) {
             $this->actions[] = ${$crop['field']} = new EditFormatOverride($crop['field'], $crop['format'], [
-                'id' => 'crop-' . $crop['field']
+                'id' => 'crop-' . $crop['field'] . '-' . $crop['format']
             ]);
 
             $popout[] = ${$crop['field']}->create_link($crop['text']);
