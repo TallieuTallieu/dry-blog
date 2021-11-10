@@ -20,6 +20,7 @@ class BlogPost extends Model
         'author' => BlogAuthor::class,
         'is_visible' => Boolean::class,
         'is_private' => Boolean::class,
+        'is_featured' => Boolean::class,
     ];
 
     /**

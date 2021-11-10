@@ -19,6 +19,7 @@ use Tnt\Blog\Revisions\CreateBlogAuthorTable;
 use Tnt\Blog\Revisions\CreateBlogPostBlockTable;
 use Tnt\Blog\Revisions\CreateBlogPostPhotoTable;
 use Tnt\Blog\Revisions\CreateBlogPostTable;
+use Tnt\Blog\Revisions\UpdateBlogPostAddIsFeatured;
 use Tnt\Blog\Revisions\UpdateBlogPostAddIsPrivate;
 use Tnt\Blog\Revisions\UpdateBlogPostBlockAddEmbed;
 use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
@@ -63,6 +64,7 @@ class BlogServiceProvider extends ServiceProvider
                 UpdateBlogPostAddIsPrivate::class,
                 UpdateBlogPostBlockAddVideo::class,
                 UpdateBlogPostBlockAddEmbed::class,
+                UpdateBlogPostAddIsFeatured::class
             ]);
 
             $app->get(MigrationManager::class)
@@ -88,6 +90,7 @@ class BlogServiceProvider extends ServiceProvider
         $hasPhotos = $app->get(RepositoryInterface::class)->get('blog.photos', true);
         $advancedLayout = $app->get(RepositoryInterface::class)->get('blog.advanced-layout', true);
         $isPrivate = $app->get(RepositoryInterface::class)->get('blog.private', false);
+        $isFeatured = $app->get(RepositoryInterface::class)->get('blog.featured', false);
         $blockTypes = $app->get(RepositoryInterface::class)->get('blog.types', [
             'text-photo',
             'photo-text',
@@ -114,6 +117,7 @@ class BlogServiceProvider extends ServiceProvider
                 'photos' => $hasPhotos,
                 'advancedLayout' => $advancedLayout,
                 'isPrivate' => $isPrivate,
+                'isFeatured' => $isFeatured,
                 'blockTypes' => $blockTypes,
                 'languages' => $languages,
                 'requiredFields' => $requiredFields

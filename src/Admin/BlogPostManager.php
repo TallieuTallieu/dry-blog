@@ -48,6 +48,7 @@ class BlogPostManager extends Manager
         $photos = true;
         $advancedLayout = true;
         $isPrivate = false;
+        $isFeatured = false;
         $blockTypes = [];
         $languages = [];
         $requiredFields = [];
@@ -143,6 +144,10 @@ class BlogPostManager extends Manager
 
         if ($isPrivate) {
             $sidebarContent[] = new BooleanEdit('is_private');
+        }
+
+        if ($isFeatured) {
+            $sidebarContent[] = new BooleanEdit('is_featured');
         }
 
         $this->actions[] = $create = new Create([
