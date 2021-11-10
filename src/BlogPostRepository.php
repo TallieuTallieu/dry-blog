@@ -95,6 +95,16 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     /**
      * @return BlogPostRepositoryInterface
      */
+    public function orderByIsFeatured(): BlogPostRepositoryInterface
+    {
+        $this->addCriteria(new OrderBy('is_featured', 'ASC'));
+
+        return $this;
+    }
+
+    /**
+     * @return BlogPostRepositoryInterface
+     */
     public function isPublic(): BlogPostRepositoryInterface
     {
         $this->addCriteria(new IsFalse('is_private'));
