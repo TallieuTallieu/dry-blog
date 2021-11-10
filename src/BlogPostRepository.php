@@ -97,7 +97,8 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
      */
     public function orderByIsFeatured(): BlogPostRepositoryInterface
     {
-        $this->addCriteria(new OrderBy('is_featured', 'ASC'));
+        $this->addCriteria(new OrderBy('is_featured', 'DESC'));
+        $this->addCriteria(new OrderBy('publication_date', 'DESC'));
 
         return $this;
     }
