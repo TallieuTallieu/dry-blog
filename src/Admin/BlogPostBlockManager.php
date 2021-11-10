@@ -223,7 +223,7 @@ class BlogPostBlockManager extends Manager
             }
 
             if (in_array('embed', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video & text', [
+                $blockContent[] = [BlogPostBlock::TYPE_EMBED, 'Embed', [
                     new StringEdit('embed_id', [
                         'v8n_required' => true
                     ]),
