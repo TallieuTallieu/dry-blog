@@ -29,13 +29,13 @@ class UpdateBlogPostBlockAddEmbed implements RevisionInterface
     public function up()
     {
         $this->queryBuilder->table('blog_post_block')->alter(function (TableBuilder $table) {
-            $table->addColumn('embed', 'varchar')->length(255);
+            $table->addColumn('embed_id', 'varchar')->length(255);
         });
 
         $this->queryBuilder->build();
 
         Connection::get()->query($this->queryBuilder->getQuery());
-    }
+    }   
 
     /**
      *
@@ -43,7 +43,7 @@ class UpdateBlogPostBlockAddEmbed implements RevisionInterface
     public function down()
     {
         $this->queryBuilder->table('blog_post_block')->alter(function (TableBuilder $table) {
-            $table->dropColumn('embed');
+            $table->dropColumn('embed_id');
 
         });
 
@@ -57,7 +57,7 @@ class UpdateBlogPostBlockAddEmbed implements RevisionInterface
      */
     public function describeUp(): string
     {
-        return 'Update blog_post_block table add embed';
+        return 'Update blog_post_block table add embed_id';
     }
 
     /**
@@ -65,6 +65,6 @@ class UpdateBlogPostBlockAddEmbed implements RevisionInterface
      */
     public function describeDown(): string
     {
-        return 'Update blog_post_block table drop embed';
+        return 'Update blog_post_block table drop embed_id';
     }
 }
