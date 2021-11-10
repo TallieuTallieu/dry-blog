@@ -20,6 +20,7 @@ use Tnt\Blog\Revisions\CreateBlogPostBlockTable;
 use Tnt\Blog\Revisions\CreateBlogPostPhotoTable;
 use Tnt\Blog\Revisions\CreateBlogPostTable;
 use Tnt\Blog\Revisions\UpdateBlogPostAddIsPrivate;
+use Tnt\Blog\Revisions\UpdateBlogPostBlockAddEmbed;
 use Tnt\Blog\Revisions\UpdateBlogPostBlockAddQuote;
 use Tnt\Blog\Revisions\UpdateBlogPostBlockAddVideo;
 
@@ -61,6 +62,7 @@ class BlogServiceProvider extends ServiceProvider
                 UpdateBlogPostBlockAddQuote::class,
                 UpdateBlogPostAddIsPrivate::class,
                 UpdateBlogPostBlockAddVideo::class,
+                UpdateBlogPostBlockAddEmbed::class,
             ]);
 
             $app->get(MigrationManager::class)

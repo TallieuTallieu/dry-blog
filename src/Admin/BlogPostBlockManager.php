@@ -222,6 +222,14 @@ class BlogPostBlockManager extends Manager
                 ]];
             }
 
+            if (in_array('embed', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video & text', [
+                    new StringEdit('embed_id', [
+                        'v8n_required' => true
+                    ]),
+                ]];
+            }
+
             $blockContentComponents[$language] = new EnumSwitcher('type', $blockContent, [
                 'mode' => EnumSwitcher::TABS,
             ]);

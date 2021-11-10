@@ -19,6 +19,7 @@ class BlogPostBlock extends Model
     const TYPE_QUOTE_TEXT = 'quote_text';
     const TYPE_TEXT_VIDEO = 'text_video';
     const TYPE_VIDEO_TEXT = 'video_text';
+    const TYPE_EMBED = 'embed';
 
     const VIDEO_TYPE_FILE = 'file';
     const VIDEO_TYPE_VIMEO = 'vimeo';
@@ -46,6 +47,7 @@ class BlogPostBlock extends Model
             [ self::TYPE_QUOTE_TEXT, 'Quote & text', ],
             [ self::TYPE_TEXT_VIDEO, 'Text & video', ],
             [ self::TYPE_VIDEO_TEXT, 'Video & text', ],
+            [ self::TYPE_EMBED, 'Embed', ],
         ];
     }
 }
