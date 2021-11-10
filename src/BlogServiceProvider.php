@@ -97,6 +97,7 @@ class BlogServiceProvider extends ServiceProvider
             'text',
             'quote',
         ]);
+
         $languages = $app->get(RepositoryInterface::class)->get('blog.languages', [
             'nl',
             'en',
@@ -110,6 +111,8 @@ class BlogServiceProvider extends ServiceProvider
             'publication_date'
         ]);
 
+        $croppers = $app->get(RepositoryInterface::class)->get('blog.croppers', []);
+
         $modules = [
             new BlogPostManager([
                 'categories' => $hasCategories,
@@ -120,7 +123,8 @@ class BlogServiceProvider extends ServiceProvider
                 'isFeatured' => $isFeatured,
                 'blockTypes' => $blockTypes,
                 'languages' => $languages,
-                'requiredFields' => $requiredFields
+                'requiredFields' => $requiredFields,
+                'croppers' => $croppers,
             ]),
         ];
 

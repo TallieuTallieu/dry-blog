@@ -5,6 +5,7 @@ namespace Tnt\Blog\Admin;
 use dry\admin\component\I18nSwitcher;
 use dry\admin\component\Popout;
 use dry\http\Response;
+use dry\media\EditFormatOverride;
 use dry\orm\action\Execute;
 use dry\route\Router;
 use Tnt\Blog\Model\BlogPost;
@@ -52,6 +53,7 @@ class BlogPostManager extends Manager
         $blockTypes = [];
         $languages = [];
         $requiredFields = [];
+        $croppers = [];
 
         extract( $kwargs, EXTR_IF_EXISTS );
 
@@ -262,6 +264,18 @@ class BlogPostManager extends Manager
             'icon' => Execute::ICON_DUPLICATE,
         ]);
 
+        $popout = [
+            $duplicate->create_link(),
+        ];
+
+        foreach ($croppers as $crop) {
+            $this->actions[] = ${$crop['field']} = new EditFormatOverride($crop['field'], $crop['format'], [
+                'id' => 'crop-' . $crop['field']
+            ]);
+
+            $popout[] = ${$crop['field']}->create_link($crop['text']);
+        }
+
         $this->actions[] = $delete = new Delete();
 
         $this->header[] = $create->create_link('Add post');
@@ -282,11 +296,11 @@ class BlogPostManager extends Manager
                 }
             ]),
             new DateView('publication_date'),
+
             $this->edit->create_link(),
             $delete->create_link(),
-            new Popout([
-                $duplicate->create_link(),
-            ])
+
+            new Popout($popout)
         ],[
             'field_to_row_class' => [
                 'is_visible', NULL, IndexRow::STYLE_DISABLED
