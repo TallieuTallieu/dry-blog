@@ -153,9 +153,7 @@ class BlogPostManager extends Manager
 
         $sidebarContent = [
             $generalComponentsContainer,
-            new DateEdit('publication_date', [
-                'v8n_required' => $this->isRequired('publication_date'),
-            ]),
+            $publication,
             new Picker('photo', [
                 'v8n_required' => $this->isRequired('photo'),
             ]),
