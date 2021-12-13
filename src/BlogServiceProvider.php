@@ -113,6 +113,8 @@ class BlogServiceProvider extends ServiceProvider
 
         $croppers = $app->get(RepositoryInterface::class)->get('blog.croppers', []);
 
+        $publicationTimestamp = $app->get(RepositoryInterface::class)->get('blog.publication_timestamp', false);
+
         $modules = [
             new BlogPostManager([
                 'categories' => $hasCategories,
@@ -125,6 +127,7 @@ class BlogServiceProvider extends ServiceProvider
                 'languages' => $languages,
                 'requiredFields' => $requiredFields,
                 'croppers' => $croppers,
+                'publicationTimestamp' => $publicationTimestamp,
             ]),
         ];
 

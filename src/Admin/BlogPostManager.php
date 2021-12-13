@@ -16,6 +16,7 @@ use dry\admin\component\DateView;
 use dry\admin\component\EnumEdit;
 use dry\admin\component\Stack;
 use dry\admin\component\StringEdit;
+use dry\admin\component\TimeEdit2;
 use dry\admin\component\StringView;
 use dry\admin\component\TabbedContent;
 use dry\admin\Module;
@@ -50,6 +51,7 @@ class BlogPostManager extends Manager
         $advancedLayout = true;
         $isPrivate = false;
         $isFeatured = false;
+        $publicationTimestamp = false;
         $blockTypes = [];
         $languages = [];
         $requiredFields = [];
@@ -128,6 +130,26 @@ class BlogPostManager extends Manager
                 ]),
             ]]
         ]);
+
+        if ($publicationTimestamp) {
+            $publication = new Stack(Stack::HORIZONTAL, [
+                new DateEdit('publication_date', [
+                    'v8n_required' => $this->isRequired('publication_date'),
+                ]),
+                new TimeEdit2('publication_hour', [
+                    'v8n_required' => $this->isRequired('publication_hour'),
+                    'default_value' => '00:00'
+                ]),
+            ]);
+        }
+
+        else {
+            $publication = new Stack(Stack::HORIZONTAL, [
+                new DateEdit('publication_date', [
+                    'v8n_required' => $this->isRequired('publication_date'),
+                ]),
+            ]);
+        }
 
         $sidebarContent = [
             $generalComponentsContainer,
