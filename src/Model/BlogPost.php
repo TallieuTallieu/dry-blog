@@ -2,11 +2,16 @@
 
 namespace Tnt\Blog\Model;
 
+use Carbon\Carbon;
 use dry\media\File;
 use dry\orm\Model;
 use dry\orm\relationship\HasMany;
 use dry\orm\special\Boolean;
 
+/**
+ * @property $blocks
+ * @property $photos
+ */
 class BlogPost extends Model
 {
     const TABLE = 'blog_post';
@@ -23,9 +28,11 @@ class BlogPost extends Model
         'is_featured' => Boolean::class,
     ];
 
-    /**
-     * @return array
-     */
+    public function __toString(): string
+    {
+        return $this->title_en ? $this->title_en : ( $this->title_nl ? $this->title_nl : $this->title_fr );
+    }
+
     public static function get_layout_enum(): array
     {
         return [
@@ -34,43 +41,38 @@ class BlogPost extends Model
         ];
     }
 
-    /**
-     * @return \dry\orm\relationship\HasMany
-     */
     public function get_blocks(): HasMany
     {
         return $this->has_many(BlogPostBlock::class, 'blog_post', 'ORDER BY sort_index');
     }
 
-    /**
-     * @return \dry\orm\relationship\HasMany
-     */
     public function get_photos(): HasMany
     {
         return $this->has_many(BlogPostPhoto::class, 'blog_post', 'ORDER BY sort_index');
     }
 
-    /**
-     * Delete item
-     */
-    public function delete(): void
+    public function save(): void
     {
-        foreach($this->blocks as $b) {
-            $b->delete();
+        if ($this->publication_hour) {
+            $dateTimestamp = $this->publication_date;
+            $hourTimestamp = Carbon::createFromTimeString($this->publication_hour)->timestamp - Carbon::now()->startOfDay()->timestamp;
+
+            $this->publication_timestamp = $dateTimestamp + $hourTimestamp;
         }
 
-        foreach($this->photos as $p) {
-            $p->delete();
+        parent::save();
+    }
+
+    public function delete(): void
+    {
+        foreach($this->blocks as $block) {
+            $block->delete();
+        }
+
+        foreach($this->photos as $photo) {
+            $photo->delete();
         }
 
         parent::delete();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->title_en ? $this->title_en : ( $this->title_nl ? $this->title_nl : $this->title_fr );
     }
 }
