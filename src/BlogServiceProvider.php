@@ -4,6 +4,7 @@ namespace Tnt\Blog;
 
 use dry\admin\Portal;
 use Oak\Contracts\Config\RepositoryInterface;
+use Oak\Contracts\Console\KernelInterface;
 use Oak\Contracts\Container\ContainerInterface;
 use Oak\Migration\MigrationManager;
 use Oak\Migration\Migrator;
@@ -11,6 +12,7 @@ use Oak\ServiceProvider;
 use Tnt\Blog\Admin\BlogCategoryManager;
 use Tnt\Blog\Admin\BlogAuthorManager;
 use Tnt\Blog\Admin\BlogPostManager;
+use Tnt\Blog\Console\GenerateTimestamps;
 use Tnt\Blog\Contracts\BlogPortalInterface;
 use Tnt\Blog\Contracts\BlogCategoryRepositoryInterface;
 use Tnt\Blog\Contracts\BlogPostRepositoryInterface;
@@ -28,7 +30,6 @@ use Tnt\Blog\Revisions\UpdateBlogPostBlockAddVideo;
 
 class BlogServiceProvider extends ServiceProvider
 {
-
     /**
      * @param ContainerInterface $app
      * @return mixed|void
@@ -50,7 +51,6 @@ class BlogServiceProvider extends ServiceProvider
     public function boot(ContainerInterface $app)
     {
         if ($app->isRunningInConsole()) {
-
             $migrator = $app->getWith(Migrator::class, [
                 'name' => 'blog',
             ]);
@@ -69,8 +69,11 @@ class BlogServiceProvider extends ServiceProvider
                 UpdateBlogPostAddPublicationTimestamp::class,
             ]);
 
-            $app->get(MigrationManager::class)
-                ->addMigrator($migrator);
+            $app->get(MigrationManager::class)->addMigrator($migrator);
+
+            $console = $app->get(KernelInterface::class);
+
+            $console->registerCommand(GenerateTimestamps::class);
         }
 
         $this->registerPortal($app);
