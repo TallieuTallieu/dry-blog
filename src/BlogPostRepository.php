@@ -29,7 +29,7 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
      */
     public function recent(): BlogPostRepositoryInterface
     {
-        $this->addCriteria(new OrderBy('publication_date', 'DESC'));
+        $this->addCriteria(new OrderBy('publication_timestamp', 'DESC'));
 
         return $this;
     }
@@ -39,7 +39,7 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
      */
     public function published(): BlogPostRepositoryInterface
     {
-        $this->addCriteria(new LessThanOrEqual('publication_date', time()));
+        $this->addCriteria(new LessThanOrEqual('publication_timestamp', time()));
         $this->addCriteria(new IsTrue('is_visible'));
 
         return $this;
@@ -52,8 +52,8 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function prev(BlogPost $blogPost): BlogPostRepositoryInterface
     {
         $this->addCriteria(new NotEquals('id', $blogPost->id));
-        $this->addCriteria(new LessThan('publication_date', $blogPost->publication_date));
-        $this->addCriteria(new OrderBy('publication_date', 'DESC'));
+        $this->addCriteria(new LessThan('publication_timestamp', $blogPost->publication_timestamp));
+        $this->addCriteria(new OrderBy('publication_timestamp', 'DESC'));
 
         return $this;
     }
@@ -65,8 +65,8 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function next(BlogPost $blogPost): BlogPostRepositoryInterface
     {
         $this->addCriteria(new NotEquals('id', $blogPost->id));
-        $this->addCriteria(new GreaterThan('publication_date', $blogPost->publication_date));
-        $this->addCriteria(new OrderBy('publication_date', 'ASC'));
+        $this->addCriteria(new GreaterThan('publication_timestamp', $blogPost->publication_timestamp));
+        $this->addCriteria(new OrderBy('publication_timestamp', 'ASC'));
 
         return $this;
     }
@@ -98,7 +98,7 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function orderByIsFeatured(): BlogPostRepositoryInterface
     {
         $this->addCriteria(new OrderBy('is_featured', 'DESC'));
-        $this->addCriteria(new OrderBy('publication_date', 'DESC'));
+        $this->addCriteria(new OrderBy('publication_timestamp', 'DESC'));
 
         return $this;
     }
@@ -123,7 +123,7 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     public function yearly($year): BlogPostRepositoryInterface
     {
         if ($year) {
-            $this->addCriteria(new Equals(new Raw('FROM_UNIXTIME(publication_date, \'%Y\')'), $year));
+            $this->addCriteria(new Equals(new Raw('FROM_UNIXTIME(publication_timestamp, \'%Y\')'), $year));
         }
 
         return $this;

@@ -60,6 +60,10 @@ class BlogPost extends Model
             $this->publication_timestamp = $dateTimestamp + $hourTimestamp;
         }
 
+        if (! $this->publication_hour) {
+            $this->publication_timestamp = $this->publication_date;
+        }
+
         parent::save();
     }
 
