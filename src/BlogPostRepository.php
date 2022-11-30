@@ -46,6 +46,16 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
     }
 
     /**
+     * @return BlogPostRepositoryInterface
+     */
+    public function visible(): BlogPostRepositoryInterface
+    {
+        $this->addCriteria(new IsTrue('is_visible'));
+
+        return $this;
+    }
+
+    /**
      * @param BlogPost $blogPost
      * @return BlogPostRepositoryInterface
      */
