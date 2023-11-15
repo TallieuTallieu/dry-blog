@@ -13,7 +13,7 @@
   "require": {
     "tallieutallieu/oak": "^1.0.0",
     "tallieutallieu/dry-dbi": "^1.0.8",
-    "tallieutallieu/dry-datalist": "^1.0.6",
+    "tallieutallieu/dry-datalist": "^1.0",
     "nesbot/carbon": "^2.55"
   },
   "autoload": {
