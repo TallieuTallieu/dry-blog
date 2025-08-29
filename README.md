@@ -25,6 +25,7 @@ languages               | ['nl', 'en', 'fr']
 private                 | false
 required-fields         | ['photo', 'title', 'slug', 'publication_date']
 publication_timestamp   | false
+video_types             | ['file', 'vimeo', 'youtube']
 
 #### Usage
 
@@ -61,7 +62,7 @@ class blog extends base
         
         $tpl = parent::get_base_template($request, $page);
         $tpl->blogPosts = $dataList->getResults();
-        $tpl->render( 'blog/index.tpl' );
+        $tpl->render('blog/index.tpl');
     }
 }
 ```
