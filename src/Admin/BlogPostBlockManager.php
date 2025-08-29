@@ -4,6 +4,8 @@ namespace Tnt\Blog\Admin;
 
 use dry\admin\component\EnumSwitcher;
 use dry\admin\component\I18nSwitcher;
+use app\container\Application;
+use Oak\Contracts\Config\RepositoryInterface;
 use Tnt\Blog\Model\BlogPostBlock;
 
 use dry\admin\component\EnumView;
@@ -182,38 +184,37 @@ class BlogPostBlockManager extends Manager
                 ]];
             }
 
+            if (in_array('video', $blockTypes)) {
+                $app = Application::get();
+                $config = $app->get(RepositoryInterface::class);
+
+                $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
+
+                $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video', [
+                    new StringEdit('title_' . $language, [
+                        'label' => 'title',
+                    ]),
+                    new Stack(Stack::HORIZONTAL, [
+                        new Stack(Stack::VERTICAL, [
+                            new EnumSwitcher('video_type', $videoTypes),
+                        ]),
+                    ]),
+                ]];
+            }
+
             if (in_array('video-text', $blockTypes)) {
+                $app = Application::get();
+                $config = $app->get(RepositoryInterface::class);
+
+                $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
+
                 $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video & text', [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
                     new Stack(Stack::HORIZONTAL, [
                         new Stack(Stack::VERTICAL, [
-                            new EnumSwitcher('video_type', [
-                                [BlogPostBlock::VIDEO_TYPE_FILE, 'File', [
-                                    new Picker('video', [
-                                        'v8n_required' => true,
-                                        'v8n_mimetype' => [
-                                            'video/mp4'
-                                        ],
-                                    ]),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                                [BlogPostBlock::VIDEO_TYPE_VIMEO, 'Vimeo', [
-                                    new StringEdit('video_id', [
-                                        'v8n_required' => true
-                                    ]),
-                                    new Picker('photo', ['label' => 'video thumbnail']),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                                [BlogPostBlock::VIDEO_TYPE_YOUTUBE, 'Youtube', [
-                                    new StringEdit('video_id', [
-                                        'v8n_required' => true
-                                    ]),
-                                    new Picker('photo', ['label' => 'video thumbnail']),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                            ]),
+                            new EnumSwitcher('video_type', $videoTypes),
                         ]),
                         new RichtextEdit2('body_' . $language, [
                             'label' => 'body',
@@ -259,5 +260,38 @@ class BlogPostBlockManager extends Manager
         ]);
 
         $this->index->sorter = new DragSorter('sort_index');
+    }
+
+    private function getVideoTypes(string $language, array $types)
+    {
+        $videoTypes = [
+            'file' => [BlogPostBlock::VIDEO_TYPE_FILE, 'File', [
+                new Picker('video', [
+                    'v8n_required' => true,
+                    'v8n_mimetype' => [
+                        'video/mp4'
+                    ],
+                ]),
+                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
+            ]],
+            'vimeo' => [BlogPostBlock::VIDEO_TYPE_VIMEO, 'Vimeo', [
+                new StringEdit('video_id', [
+                    'v8n_required' => true
+                ]),
+                new Picker('photo', ['label' => 'video thumbnail']),
+                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
+            ]],
+            'youtube' => [BlogPostBlock::VIDEO_TYPE_YOUTUBE, 'Youtube', [
+                new StringEdit('video_id', [
+                    'v8n_required' => true
+                ]),
+                new Picker('photo', ['label' => 'video thumbnail']),
+                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
+            ]],
+        ];
+
+        return array_filter($videoTypes, function ($type, $key) use ($types) {
+            return in_array($key, $types);
+        }, ARRAY_FILTER_USE_BOTH);
     }
 }
