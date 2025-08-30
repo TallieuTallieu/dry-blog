@@ -207,9 +207,6 @@ class BlogPostBlockManager extends Manager
 
         $blockContentContainer = $blockContentComponents[$languages[0]];
 
-//        var_dump($blockContentContainer);
-//        die();
-
         if (count($languages) > 1) {
             $blockContentContainer = new I18nSwitcher($blockContentComponents);
         }
