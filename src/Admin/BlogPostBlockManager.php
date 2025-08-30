@@ -34,6 +34,11 @@ class BlogPostBlockManager extends Manager
         $blockContentComponents = [];
 
         foreach ($languages as $language) {
+            $app = Application::get();
+            $config = $app->get(RepositoryInterface::class);
+
+            $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
+
             if (in_array('text-photo', $blockTypes)) {
                 $blockContent[] = [BlogPostBlock::TYPE_TEXT_PHOTO, 'Text & photo', [
                     new StringEdit('title_'.$language, [
@@ -140,57 +145,8 @@ class BlogPostBlockManager extends Manager
                 ]];
             }
 
-            if (in_array('text-video', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXT_VIDEO, 'Text & video', [
-                    new StringEdit('title_' . $language, [
-                        'label' => 'title',
-                    ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new RichtextEdit2('body_' . $language, [
-                            'label' => 'body',
-                        ]),
-                        new Stack(Stack::VERTICAL, [
-                            new EnumSwitcher('video_type', [
-                                [BlogPostBlock::VIDEO_TYPE_FILE, 'File', [
-                                    new Picker('video', [
-                                        'v8n_required' => true,
-                                        'v8n_mimetype' => [
-                                            'video/mp4'
-                                        ],
-                                    ]),
-                                    new Picker('photo', [
-                                        'label' => 'video thumbnail',
-                                        'v8n_required' => true
-                                    ]),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                                [BlogPostBlock::VIDEO_TYPE_VIMEO, 'Vimeo', [
-                                    new StringEdit('video_id', [
-                                        'v8n_required' => true
-                                    ]),
-                                    new Picker('photo', ['label' => 'video thumbnail']),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                                [BlogPostBlock::VIDEO_TYPE_YOUTUBE, 'Youtube', [
-                                    new StringEdit('video_id', [
-                                        'v8n_required' => true
-                                    ]),
-                                    new Picker('photo', ['label' => 'video thumbnail']),
-                                    new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-                                ]],
-                            ]),
-                        ]),
-                    ]),
-                ]];
-            }
-
             if (in_array('video', $blockTypes)) {
-                $app = Application::get();
-                $config = $app->get(RepositoryInterface::class);
-
-                $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
-
-                $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video', [
+                $blockContent[] = [BlogPostBlock::TYPE_VIDEO, 'Video', [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
@@ -202,12 +158,23 @@ class BlogPostBlockManager extends Manager
                 ]];
             }
 
+            if (in_array('text-video', $blockTypes)) {
+                $blockContent[] = [BlogPostBlock::TYPE_TEXT_VIDEO, 'Text & video', [
+                    new StringEdit('title_' . $language, [
+                        'label' => 'title',
+                    ]),
+                    new Stack(Stack::HORIZONTAL, [
+                        new RichtextEdit2('body_' . $language, [
+                            'label' => 'body',
+                        ]),
+                        new Stack(Stack::VERTICAL, [
+                            new EnumSwitcher('video_type', $videoTypes),
+                        ]),
+                    ]),
+                ]];
+            }
+
             if (in_array('video-text', $blockTypes)) {
-                $app = Application::get();
-                $config = $app->get(RepositoryInterface::class);
-
-                $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
-
                 $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video & text', [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
@@ -240,6 +207,9 @@ class BlogPostBlockManager extends Manager
 
         $blockContentContainer = $blockContentComponents[$languages[0]];
 
+//        var_dump($blockContentContainer);
+//        die();
+
         if (count($languages) > 1) {
             $blockContentContainer = new I18nSwitcher($blockContentComponents);
         }
@@ -262,7 +232,7 @@ class BlogPostBlockManager extends Manager
         $this->index->sorter = new DragSorter('sort_index');
     }
 
-    private function getVideoTypes(string $language, array $types)
+    private function getVideoTypes(string $language, array $types): array
     {
         $videoTypes = [
             'file' => [BlogPostBlock::VIDEO_TYPE_FILE, 'File', [
