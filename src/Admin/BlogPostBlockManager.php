@@ -27,191 +27,312 @@ class BlogPostBlockManager extends Manager
     {
         parent::__construct(BlogPostBlock::class, [
             'singular' => 'content',
-            'plural' => 'content'
+            'plural' => 'content',
         ]);
 
         $blockContent = [];
-        $blockContentComponents = [];
 
-        foreach ($languages as $language) {
-            $app = Application::get();
-            $config = $app->get(RepositoryInterface::class);
+        $app = Application::get();
+        $config = $app->get(RepositoryInterface::class);
+        $multiLang = count($languages) > 1;
 
-            $videoTypes = $this->getVideoTypes($language, $config->get('blog.video_types', []));
+        $videoTypes = $this->getVideoTypes(
+            $languages,
+            $config->get('blog.video_types', [])
+        );
 
-            if (in_array('text-photo', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXT_PHOTO, 'Text & photo', [
-                    new StringEdit('title_'.$language, [
+        if (in_array('text-photo', $blockTypes)) {
+            $textPhotoBlocks = [];
+
+            foreach ($languages as $language) {
+                $textPhotoBlocks[$language] = [
+                    new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
                     new Stack(Stack::HORIZONTAL, [
-                        new RichtextEdit2('body_'.$language, [
+                        new RichtextEdit2('body_' . $language, [
                             'label' => 'body',
                         ]),
                         new Picker('photo'),
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('photo-text', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_PHOTO_TEXT, 'Photo & text', [
-                    new StringEdit('title_'.$language, [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_TEXT_PHOTO,
+                'Text & photo',
+                $this->wrapWithI18nSwitcher($textPhotoBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('photo-text', $blockTypes)) {
+            $photoTextBlocks = [];
+
+            foreach ($languages as $language) {
+                $photoTextBlocks[$language] = [
+                    new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
                     new Stack(Stack::HORIZONTAL, [
                         new Picker('photo'),
-                        new RichtextEdit2('body_'.$language, [
+                        new RichtextEdit2('body_' . $language, [
                             'label' => 'body',
                         ]),
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('photo', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_PHOTO, 'Photo', [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_PHOTO_TEXT,
+                'Photo & text',
+                $this->wrapWithI18nSwitcher($photoTextBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('photo', $blockTypes)) {
+            $blockContent[] = [
+                BlogPostBlock::TYPE_PHOTO,
+                'Photo',
+                [
                     new Picker('photo', [
-                        'v8n_required' => TRUE,
+                        'v8n_required' => true,
                     ]),
-                ]];
-            }
+                ],
+            ];
+        }
 
-            if (in_array('text', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXT, 'Text', [
-                    new StringEdit('title_'.$language, [
+        if (in_array('text', $blockTypes)) {
+            $textBlocks = [];
+
+            foreach ($languages as $language) {
+                $textBlocks[$language] = [
+                    new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new RichtextEdit2('body_'.$language, [
+                    new RichtextEdit2('body_' . $language, [
                         'label' => 'body',
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('textframe', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXTFRAME, 'Textframe', [
-                    new StringEdit('title_'.$language, [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_TEXT,
+                'Text',
+                $this->wrapWithI18nSwitcher($textBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('textframe', $blockTypes)) {
+            $textframeBlocks = [];
+
+            foreach ($languages as $language) {
+                $textframeBlocks[$language] = [
+                    new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new RichtextEdit2('body_'.$language, [
+                    new RichtextEdit2('body_' . $language, [
                         'label' => 'body',
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('quote', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_QUOTE, 'Quote', [
-                    new StringEdit('quote_'.$language, [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_TEXTFRAME,
+                'Textframe',
+                $this->wrapWithI18nSwitcher($textframeBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('quote', $blockTypes)) {
+            $quoteBlocks = [];
+
+            foreach ($languages as $language) {
+                $quoteBlocks[$language] = [
+                    new StringEdit('quote_' . $language, [
                         'label' => 'quote',
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('quote-text', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_QUOTE_TEXT, 'Quote & text', [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_QUOTE,
+                'Quote',
+                $this->wrapWithI18nSwitcher($quoteBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('quote-text', $blockTypes)) {
+            $quoteTextBlocks = [];
+
+            foreach ($languages as $language) {
+                $quoteTextBlocks[$language] = [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new StringEdit('quote_' . $language, [
-                            'label' => 'quote',
-                            'multiline' => true,
-                            'height' => 75,
-                        ]),
-                        new RichtextEdit2('body_' . $language, [
-                            'label' => 'body',
-                        ]),
-                    ], [
-                        'grid' => [2, 3]
-                    ]),
-                ]];
+                    new Stack(
+                        Stack::HORIZONTAL,
+                        [
+                            new StringEdit('quote_' . $language, [
+                                'label' => 'quote',
+                                'multiline' => true,
+                                'height' => 75,
+                            ]),
+                            new RichtextEdit2('body_' . $language, [
+                                'label' => 'body',
+                            ]),
+                        ],
+                        [
+                            'grid' => [2, 3],
+                        ]
+                    ),
+                ];
             }
 
-            if (in_array('text-quote', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXT_QUOTE, 'Text & quote', [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_QUOTE_TEXT,
+                'Quote & text',
+                $this->wrapWithI18nSwitcher($quoteTextBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('text-quote', $blockTypes)) {
+            $textQuoteBlocks = [];
+
+            foreach ($languages as $language) {
+                $textQuoteBlocks[$language] = [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new RichtextEdit2('body_' . $language, [
-                            'label' => 'body',
-                        ]),
-                        new StringEdit('quote_' . $language, [
-                            'label' => 'quote',
-                            'multiline' => true,
-                            'height' => 75,
-                        ]),
-                    ], [
-                        'grid' => [3, 2]
-                    ]),
-                ]];
+                    new Stack(
+                        Stack::HORIZONTAL,
+                        [
+                            new RichtextEdit2('body_' . $language, [
+                                'label' => 'body',
+                            ]),
+                            new StringEdit('quote_' . $language, [
+                                'label' => 'quote',
+                                'multiline' => true,
+                                'height' => 75,
+                            ]),
+                        ],
+                        [
+                            'grid' => [3, 2],
+                        ]
+                    ),
+                ];
             }
 
-            if (in_array('video', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_VIDEO, 'Video', [
+            $blockContent[] = [
+                BlogPostBlock::TYPE_TEXT_QUOTE,
+                'Text & quote',
+                $this->wrapWithI18nSwitcher($textQuoteBlocks, $multiLang),
+            ];
+        }
+
+        if (in_array('video', $blockTypes)) {
+            $videoBlocks = [];
+
+            foreach ($languages as $language) {
+                $videoBlocks[$language] = [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new Stack(Stack::VERTICAL, [
-                            new EnumSwitcher('video_type', $videoTypes),
-                        ]),
-                    ]),
-                ]];
+                ];
             }
 
-            if (in_array('text-video', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_TEXT_VIDEO, 'Text & video', [
+            $videoBlocks = $this->wrapWithI18nSwitcher(
+                $videoBlocks,
+                $multiLang
+            );
+
+            $videoBlocks[] = new EnumSwitcher('video_type', $videoTypes);
+
+            $blockContent[] = [
+                BlogPostBlock::TYPE_VIDEO,
+                'Video',
+                $videoBlocks,
+            ];
+        }
+
+        if (in_array('text-video', $blockTypes)) {
+            $textVideoBlocks = [];
+
+            foreach ($languages as $language) {
+                $textVideoBlocks[$language] = [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new RichtextEdit2('body_' . $language, [
-                            'label' => 'body',
-                        ]),
-                        new Stack(Stack::VERTICAL, [
-                            new EnumSwitcher('video_type', $videoTypes),
-                        ]),
+                    new RichtextEdit2('body_' . $language, [
+                        'label' => 'body',
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('video-text', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_VIDEO_TEXT, 'Video & text', [
+            $textVideoBlocks = $this->wrapWithI18nSwitcher(
+                $textVideoBlocks,
+                $multiLang
+            );
+
+            $blockContent[] = [
+                BlogPostBlock::TYPE_TEXT_VIDEO,
+                'Text & video',
+                [
+                    new Stack(Stack::HORIZONTAL, [
+                        $textVideoBlocks,
+                        new EnumSwitcher('video_type', $videoTypes),
+                    ]),
+                ],
+            ];
+        }
+
+        if (in_array('video-text', $blockTypes)) {
+            $videoTextBlocks = [];
+
+            foreach ($languages as $language) {
+                $videoTextBlocks[$language] = [
                     new StringEdit('title_' . $language, [
                         'label' => 'title',
                     ]),
-                    new Stack(Stack::HORIZONTAL, [
-                        new Stack(Stack::VERTICAL, [
-                            new EnumSwitcher('video_type', $videoTypes),
-                        ]),
-                        new RichtextEdit2('body_' . $language, [
-                            'label' => 'body',
-                        ]),
+                    new RichtextEdit2('body_' . $language, [
+                        'label' => 'body',
                     ]),
-                ]];
+                ];
             }
 
-            if (in_array('embed', $blockTypes)) {
-                $blockContent[] = [BlogPostBlock::TYPE_EMBED, 'Embed', [
+            $videoTextBlocks = $this->wrapWithI18nSwitcher(
+                $videoTextBlocks,
+                $multiLang
+            );
+
+            $blockContent[] = [
+                BlogPostBlock::TYPE_VIDEO_TEXT,
+                'Video & text',
+                [
+                    new Stack(Stack::HORIZONTAL, [
+                        new EnumSwitcher('video_type', $videoTypes),
+                        $textVideoBlocks,
+                    ]),
+                ],
+            ];
+        }
+
+        if (in_array('embed', $blockTypes)) {
+            $blockContent[] = [
+                BlogPostBlock::TYPE_EMBED,
+                'Embed',
+                [
                     new StringEdit('embed_id', [
-                        'v8n_required' => true
+                        'v8n_required' => true,
                     ]),
-                ]];
-            }
-
-            $blockContentComponents[$language] = new EnumSwitcher('type', $blockContent, [
-                'mode' => EnumSwitcher::TABS,
-            ]);
-
-            $blockContent = [];
+                ],
+            ];
         }
 
-        $blockContentContainer = $blockContentComponents[$languages[0]];
+        $enumswitcher = new EnumSwitcher('type', $blockContent, [
+            'mode' => EnumSwitcher::TABS,
+        ]);
 
-        if (count($languages) > 1) {
-            $blockContentContainer = new I18nSwitcher($blockContentComponents);
-        }
-
-        $this->actions[] = $create = new Create([$blockContentContainer]);
+        $this->actions[] = $create = new Create([$enumswitcher]);
 
         $this->actions[] = $edit = new Edit($create->components);
 
@@ -229,37 +350,79 @@ class BlogPostBlockManager extends Manager
         $this->index->sorter = new DragSorter('sort_index');
     }
 
-    private function getVideoTypes(string $language, array $types): array
+    private function getVideoTypes(array $languages, array $types): array
     {
+        $multiLang = count($languages) > 1;
+        $mediaCreditBlock = [];
+
+        foreach ($languages as $index => $language) {
+            $key = $multiLang ? $language : $index;
+
+            $mediaCreditBlock[$key] = new StringEdit(
+                'media_credit_' . $language,
+                [
+                    'label' => 'video credit',
+                ]
+            );
+        }
+
+        if ($multiLang) {
+            $mediaCreditBlock = new I18nSwitcher($mediaCreditBlock);
+        } else {
+            $mediaCreditBlock = reset($mediaCreditBlock);
+        }
+
         $videoTypes = [
-            'file' => [BlogPostBlock::VIDEO_TYPE_FILE, 'File', [
-                new Picker('video', [
-                    'v8n_required' => true,
-                    'v8n_mimetype' => [
-                        'video/mp4'
-                    ],
-                ]),
-                new Picker('photo', ['label' => 'video thumbnail']),
-                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-            ]],
-            'vimeo' => [BlogPostBlock::VIDEO_TYPE_VIMEO, 'Vimeo', [
-                new StringEdit('video_id', [
-                    'v8n_required' => true
-                ]),
-                new Picker('photo', ['label' => 'video thumbnail']),
-                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-            ]],
-            'youtube' => [BlogPostBlock::VIDEO_TYPE_YOUTUBE, 'Youtube', [
-                new StringEdit('video_id', [
-                    'v8n_required' => true
-                ]),
-                new Picker('photo', ['label' => 'video thumbnail']),
-                new StringEdit('media_credit_' . $language, ['label' => 'video credit']),
-            ]],
+            'file' => [
+                BlogPostBlock::VIDEO_TYPE_FILE,
+                'File',
+                [
+                    new Picker('video', [
+                        'v8n_required' => true,
+                        'v8n_mimetype' => ['video/mp4'],
+                    ]),
+                    new Picker('photo', ['label' => 'video thumbnail']),
+                    $mediaCreditBlock,
+                ],
+            ],
+            'vimeo' => [
+                BlogPostBlock::VIDEO_TYPE_VIMEO,
+                'Vimeo',
+                [
+                    new StringEdit('video_id', [
+                        'v8n_required' => true,
+                    ]),
+                    new Picker('photo', ['label' => 'video thumbnail']),
+                    $mediaCreditBlock,
+                ],
+            ],
+            'youtube' => [
+                BlogPostBlock::VIDEO_TYPE_YOUTUBE,
+                'Youtube',
+                [
+                    new StringEdit('video_id', [
+                        'v8n_required' => true,
+                    ]),
+                    new Picker('photo', ['label' => 'video thumbnail']),
+                    $mediaCreditBlock,
+                ],
+            ],
         ];
 
-        return array_filter($videoTypes, function ($type, $key) use ($types) {
-            return in_array($key, $types);
-        }, ARRAY_FILTER_USE_BOTH);
+        return array_filter(
+            $videoTypes,
+            function ($type, $key) use ($types) {
+                return in_array($key, $types);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+
+    public function wrapWithI18nSwitcher($blocks, bool $multiLang)
+    {
+        if ($multiLang) {
+            return [new I18nSwitcher($blocks)];
+        }
+        return array_values($blocks);
     }
 }
