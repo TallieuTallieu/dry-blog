@@ -2,19 +2,20 @@
   "name": "tallieutallieu/dry-blog",
   "description": "Dry Blog",
   "type": "library",
+  "license": "proprietary",
   "authors": [
     {
-      "name": "Dieter Vyncke",
-      "email": "dieter@tnt.be",
+      "name": "Jona Tallieu",
+      "email": "web@tnt.be",
       "homepage": "https://tnt.be",
-      "role": "Developer"
+      "role": "Owner"
     }
   ],
   "require": {
-    "tallieutallieu/oak": "^1.0.0",
-    "tallieutallieu/dry-dbi": "^1.0.8",
-    "tallieutallieu/dry-datalist": "^1.0",
-    "nesbot/carbon": "^2.55"
+    "tallieutallieu/oak": "^1.1.15",
+    "tallieutallieu/dry-dbi": "^1.0.23",
+    "tallieutallieu/dry-datalist": "^1.0.11",
+    "nesbot/carbon": "^2.73.0"
   },
   "autoload": {
     "psr-4": {
