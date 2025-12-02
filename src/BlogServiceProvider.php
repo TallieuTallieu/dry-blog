@@ -90,6 +90,8 @@ class BlogServiceProvider extends ServiceProvider
      */
     private function registerPortal(ContainerInterface $app)
     {
+        $portalId = $app->get(RepositoryInterface::class)->get('blog.portal_id', 'blog');
+        $portalTitle = $app->get(RepositoryInterface::class)->get('blog.portal_title', 'Blog');
         $hasCategories = $app->get(RepositoryInterface::class)->get('blog.categories', true);
         $hasAuthors = $app->get(RepositoryInterface::class)->get('blog.authors', true);
         $hasPhotos = $app->get(RepositoryInterface::class)->get('blog.photos', true);
@@ -144,6 +146,6 @@ class BlogServiceProvider extends ServiceProvider
             $modules['authors'] = new BlogAuthorManager($languages);
         }
 
-        return new Portal('blog', 'Blog', $modules);
+        return new Portal($portalId, $portalTitle, $modules);
     }
 }
