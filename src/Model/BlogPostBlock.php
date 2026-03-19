@@ -4,6 +4,7 @@ namespace Tnt\Blog\Model;
 
 use dry\media\File;
 use dry\orm\Model;
+use Tnt\Blog\Traits\HasTranslation;
 
 /**
  * @property string|null $video_type
@@ -12,6 +13,10 @@ use dry\orm\Model;
  */
 class BlogPostBlock extends Model
 {
+    use HasTranslation;
+
+    protected $translation_fields = ['title', 'body', 'quote'];
+
     const TABLE = 'blog_post_block';
 
     const TYPE_TEXT_PHOTO = 'text_photo';

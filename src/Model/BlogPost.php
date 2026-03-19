@@ -7,6 +7,7 @@ use dry\media\File;
 use dry\orm\Model;
 use dry\orm\relationship\HasMany;
 use dry\orm\special\Boolean;
+use Tnt\Blog\Traits\HasTranslation;
 
 /**
  * @property $blocks
@@ -14,6 +15,10 @@ use dry\orm\special\Boolean;
  */
 class BlogPost extends Model
 {
+    use HasTranslation;
+
+    protected $translation_fields = ['title', 'slug', 'intro_text', 'badge_text', 'cta_title', 'cta_url'];
+
     const TABLE = 'blog_post';
 
     const LAYOUT_CLEAN = 'clean';

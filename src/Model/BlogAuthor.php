@@ -6,9 +6,14 @@ use dry\media\File;
 use dry\orm\Model;
 use dry\orm\relationship\HasMany;
 use dry\orm\special\Boolean;
+use Tnt\Blog\Traits\HasTranslation;
 
 class BlogAuthor extends Model
 {
+    use HasTranslation;
+
+    protected $translation_fields = ['function', 'short_bio'];
+
     const TABLE = 'blog_author';
 
     public static $special_fields = [
