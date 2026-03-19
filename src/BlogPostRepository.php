@@ -22,7 +22,7 @@ class BlogPostRepository extends BaseRepository implements BlogPostRepositoryInt
 {
     use PaginatableTrait;
 
-    protected $model = BlogPost::class;
+    protected string $model = BlogPost::class;
 
     /**
      * @return BlogPostRepositoryInterface

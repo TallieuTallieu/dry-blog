@@ -10,7 +10,7 @@ use Tnt\Dbi\Criteria\OrderBy;
 
 class BlogCategoryRepository extends BaseRepository implements BlogCategoryRepositoryInterface
 {
-    protected $model = BlogCategory::class;
+    protected string $model = BlogCategory::class;
 
     /**
      * @return BlogCategoryRepositoryInterface
