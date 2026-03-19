@@ -3,18 +3,10 @@
   "description": "Dry Blog",
   "type": "library",
   "license": "proprietary",
-  "authors": [
-    {
-      "name": "Jona Tallieu",
-      "email": "web@tnt.be",
-      "homepage": "https://tnt.be",
-      "role": "Owner"
-    }
-  ],
   "require": {
-    "tallieutallieu/oak": "^1.1.15",
-    "tallieutallieu/dry-dbi": "^1.0.23",
-    "tallieutallieu/dry-datalist": "^1.0.11",
+    "tallieutallieu/oak": "^3.0.11",
+    "tallieutallieu/dry-dbi": "^3.11",
+    "tallieutallieu/dry-datalist": "^3.0",
     "nesbot/carbon": "^2.73.0"
   },
   "autoload": {
