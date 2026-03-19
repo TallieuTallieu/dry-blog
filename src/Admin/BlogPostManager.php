@@ -9,7 +9,7 @@ use dry\media\EditFormatOverride;
 use dry\orm\action\Execute;
 use dry\route\Router;
 use Tnt\Blog\Model\BlogPost;
-
+use dry\util\Helpers;
 use dry\admin\component\BooleanEdit;
 use dry\admin\component\DateEdit;
 use dry\admin\component\DateView;
@@ -309,7 +309,7 @@ class BlogPostManager extends Manager
                     Response::$language = $languages[0];
 
                     if (isset(Router::$urls[Response::$language]['blog::view'])) {
-                        return \dry\url('blog::view', $row);
+                        return Helpers::url('blog::view', $row);
                     }
 
                     return '#';
